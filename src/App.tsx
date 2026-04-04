@@ -658,6 +658,7 @@ export default function WeddingInvitation() {
                     <p>Umayangana: 071 5396933</p>
                     <p>Ashan: 071 2727407</p>
                     <p>Mr. Montegue: 071 4721366</p>
+                    <p>Mr. Thilina: 077 7260099</p>
                   </div>
                 </div>
               </div>
