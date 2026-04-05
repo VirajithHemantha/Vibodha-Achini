@@ -155,10 +155,6 @@ function CountdownTimer() {
 
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
     name: "",
     guests: "1",
@@ -169,61 +165,39 @@ export default function WeddingInvitation() {
   });
   const [rsvpStatus, setRsvpStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [wishStatus, setWishStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [hasInteracted, setHasInteracted] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const introVideoRef = React.useRef<HTMLVideoElement>(null);
 
-  const tryStartMusic = useCallback(async (withSound: boolean) => {
-    const audioEl = audioRef.current;
-    if (!audioEl) return false;
-
-    const start = async (allowSound: boolean) => {
-      audioEl.muted = !allowSound;
-      await audioEl.play();
-      setIsPlaying(true);
-      setIsSoundEnabled(allowSound);
-      setIsAutoplayBlocked(!allowSound);
-      return true;
-    };
-
-    try {
-      return await start(withSound);
-    } catch {
-      // If sound-on is blocked, try muted autoplay so the track is "running".
-      if (withSound) {
-        try {
-          return await start(false);
-        } catch {
-          // fall through
-        }
+  const startMusic = useCallback(async () => {
+    if (audioRef.current) {
+      try {
+        audioRef.current.muted = false;
+        await audioRef.current.play();
+      } catch (err) {
+        console.error("Audio playback failed:", err);
       }
-      setIsPlaying(false);
-      setIsSoundEnabled(false);
-      setIsAutoplayBlocked(true);
-      return false;
     }
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const startOnFirstInteraction = async () => {
-      if (!isMounted) return;
-      setHasInteracted(true);
-      await tryStartMusic(true);
+    const handleFirstInteraction = () => {
+      if (!hasInteracted) {
+        setHasInteracted(true);
+        startMusic();
+      }
     };
 
-    // Attempt to start with sound; fallback to muted autoplay if blocked.
-    tryStartMusic(true);
-
-    window.addEventListener("pointerdown", startOnFirstInteraction, { once: true });
-    window.addEventListener("keydown", startOnFirstInteraction, { once: true });
+    window.addEventListener("mousedown", handleFirstInteraction, { once: true });
+    window.addEventListener("touchstart", handleFirstInteraction, { once: true });
+    window.addEventListener("keydown", handleFirstInteraction, { once: true });
 
     return () => {
-      isMounted = false;
-      window.removeEventListener("pointerdown", startOnFirstInteraction);
-      window.removeEventListener("keydown", startOnFirstInteraction);
+      window.removeEventListener("mousedown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
     };
-  }, [tryStartMusic]);
+  }, [hasInteracted, startMusic]);
 
   const submitToGoogleSheet = async (payload: Record<string, string>) => {
     if (!googleScriptUrl) {
@@ -287,47 +261,11 @@ export default function WeddingInvitation() {
     }
   };
 
-  const toggleMusic = () => {
-    const audioEl = audioRef.current;
-    if (!audioEl) return;
-
-    // If it's already playing but muted (common autoplay fallback), the first click should unmute.
-    if (isPlaying && !isSoundEnabled) {
-      audioEl.muted = false;
-      setIsSoundEnabled(true);
-      setIsAutoplayBlocked(false);
-      return;
-    }
-
-    if (isPlaying) {
-      audioEl.pause();
-      setIsPlaying(false);
-      setIsSoundEnabled(false);
-      setIsAutoplayBlocked(false);
-      return;
-    }
-
-    // User gesture: try sound-on play.
-    tryStartMusic(true);
-  };
-
-  // Called inside user-interaction handlers so browsers allow audio playback
-  const startMusic = () => {
-    tryStartMusic(true);
-  };
-
-  const handleEnableSoundClick = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setHasInteracted(true);
-    startMusic();
-  };
-
-  // Handle user tap on intro screen to enable audio
+  // Handle user tap on intro screen
   const handleIntroInteraction = () => {
     if (!hasInteracted) {
       setHasInteracted(true);
-      // Start background music
-      tryStartMusic(true);
+      startMusic();
     }
   };
 
@@ -356,50 +294,9 @@ export default function WeddingInvitation() {
               playsInline
               preload="auto"
               className="w-full h-full object-cover"
-              onEnded={() => { setIsOpened(true); if (!isPlaying) startMusic(); }}
+              onEnded={() => { setIsOpened(true); startMusic(); }}
               onError={() => setIsOpened(true)}
             />
-
-            {/* Tap for Sound indicator - only shows when autoplay is blocked */}
-            <AnimatePresence>
-              {isAutoplayBlocked && !hasInteracted && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10, transition: { duration: 0.4 } }}
-                  transition={{ delay: 0.8, duration: 0.6 }}
-                  className="absolute bottom-28 left-1/2 -translate-x-1/2 z-[110] flex flex-col items-center gap-3 pointer-events-none"
-                >
-                  {/* Animated sound icon with ripple */}
-                  <motion.div
-                    animate={{ scale: [1, 1.15, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative flex items-center justify-center"
-                  >
-                    <div className="absolute w-14 h-14 rounded-full border border-white/20 animate-ping" style={{ animationDuration: '2s' }} />
-                    <div className="w-12 h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                  <span className="text-white/80 text-[10px] uppercase tracking-[0.35em] font-bold backdrop-blur-sm bg-black/20 px-4 py-1.5 rounded-full border border-white/10">
-                    Tap for Sound
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {!isSoundEnabled && !hasInteracted && (
-              <button
-                onClick={handleEnableSoundClick}
-                className="absolute bottom-10 left-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold"
-              >
-                Enable Sound
-              </button>
-            )}
 
             {/* Fallback button in case video doesn't play or user wants to skip */}
             <button
@@ -416,17 +313,6 @@ export default function WeddingInvitation() {
             animate={{ opacity: 1 }}
             className="website-shell relative z-20 w-full"
           >
-
-            {!isSoundEnabled && !hasInteracted && (
-              <motion.button
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                onClick={handleEnableSoundClick}
-                className="fixed bottom-[5.5rem] left-6 z-[60] bg-white/90 backdrop-blur-md border border-[#ccbaa2]/40 text-[#87937a] text-[10px] uppercase tracking-[0.35em] font-bold px-4 py-2 rounded-full shadow-lg"
-              >
-                Enable Sound
-              </motion.button>
-            )}
 
             {/* Sticky Return Button added */}
             <motion.button
@@ -897,37 +783,6 @@ export default function WeddingInvitation() {
       </AnimatePresence>
 
       <audio ref={audioRef} src={backgroundMusic} loop autoPlay preload="auto" />
-
-      {/* Music Control Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        onClick={toggleMusic}
-        className="fixed bottom-6 right-6 z-[60] bg-white text-[#87937a] p-3 rounded-full shadow-lg border border-[#ccbaa2]/40 hover:bg-[#87937a]/10 transition-colors"
-      >
-        <div className="flex flex-col items-center">
-          {isPlaying && isSoundEnabled ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-          ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-          )}
-        </div>
-      </motion.button>
-
-      <AnimatePresence>
-        {isAutoplayBlocked && !hasInteracted && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8, transition: { duration: 0.2 } }}
-            className="fixed bottom-[5.5rem] right-6 z-[60] pointer-events-none"
-          >
-            <div className="bg-white/90 backdrop-blur-md border border-[#ccbaa2]/40 text-[#87937a] text-[10px] uppercase tracking-[0.35em] font-bold px-3 py-1.5 rounded-full shadow-lg">
-              Tap the music button to enable sound
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <style dangerouslySetInnerHTML={{
         __html: `
