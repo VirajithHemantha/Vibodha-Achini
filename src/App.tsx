@@ -488,7 +488,7 @@ export default function WeddingInvitation() {
                   className="flex flex-col items-center mb-16"
                 >
                   <p className="text-[#87937a] text-[10px] md:text-[12px] tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold text-center leading-loose max-w-2xl">
-                    <span className="mb-4 block opacity-70">Mr. Montegue Sarachchandra & Mrs. Sarojini Nanayakkara<br />Together with<br />Mr. Prasanna Indrajith Hettiarachchi & Mrs. Manel Herath</span>
+                    <span className="mb-4 block opacity-70">Mr. Montegue Sarachchandra & Mrs. Sarojini Nanayakkara<br />Together with<br />Mr. Prasanna Indrajith Hettiarachchi(late) & Mrs. Manel Herath</span>
                     Request the honour of the presence of Mr. & Mrs./Miss/Family<br className="hidden md:block" /> to celebrate the marriage of their children
                   </p>
                 </motion.div>
@@ -534,7 +534,7 @@ export default function WeddingInvitation() {
 
                     <div className="space-y-2 mt-8">
                       <p className="text-[8px] uppercase tracking-[0.4em] font-bold text-[#87937a]/60">Loving son of</p>
-                      <p className="text-[11px] font-cinzel text-[#87937a] tracking-wider">Mr. Prasanna Indrajith Hettiarachchi<br />& Mrs. Manel Herath</p>
+                      <p className="text-[11px] font-cinzel text-[#87937a] tracking-wider">Mr. Prasanna Indrajith Hettiarachchi(late)<br />& Mrs. Manel Herath</p>
                       <h3 className="text-4xl md:text-6xl font-playball text-[#c5a059] pt-4 leading-none">Ashan</h3>
                     </div>
                   </motion.div>
