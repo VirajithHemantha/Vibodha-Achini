@@ -176,30 +176,69 @@ export default function WeddingInvitation() {
   });
   const [rsvpStatus, setRsvpStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [wishStatus, setWishStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [introMuted, setIntroMuted] = useState(true);
   const [introPlayBlocked, setIntroPlayBlocked] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const introVideoRef = React.useRef<HTMLVideoElement>(null);
   const introBootstrappedRef = React.useRef(false);
   const wasInvitationOpenedRef = React.useRef(false);
-  /** First play must stay synchronous with a user gesture (no setTimeout) or mobile browsers block it. */
-  const hasStartedBackgroundMusic = React.useRef(false);
+  /** After a successful play(), we stop forcing currentTime = 0 so the track can loop naturally. */
+  const bgMusicPlaySucceededRef = React.useRef(false);
 
-  const startMusic = useCallback(async () => {
+  /**
+   * Background music: one `<audio>` for the whole visit. Browsers (especially mobile) only allow
+   * audio in direct response to a user gesture — no await/async before play().
+   */
+  const tryPlayBackgroundMusic = useCallback(() => {
     const el = audioRef.current;
     if (!el) return;
-    try {
-      el.muted = false;
-      if (!hasStartedBackgroundMusic.current) {
-        el.currentTime = 0;
-        hasStartedBackgroundMusic.current = true;
-      }
-      await el.play();
-    } catch (err) {
-      console.error("Audio playback failed:", err);
-    }
+    el.muted = false;
+    if (!el.paused) return;
+    const fromBeginning = !bgMusicPlaySucceededRef.current;
+    if (fromBeginning) el.currentTime = 0;
+    void el
+      .play()
+      .then(() => {
+        if (fromBeginning) bgMusicPlaySucceededRef.current = true;
+      })
+      .catch(() => {});
   }, []);
+
+  /**
+   * Start bg music right after intro video begins (no extra click on desktop).
+   * If unmuted play is blocked, fall back to muted play; first user tap unmutes via tryPlayBackgroundMusic.
+   */
+  const kickBackgroundMusicAfterIntroVideo = useCallback(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (!el.paused) {
+      el.muted = false;
+      return;
+    }
+    const fromBeginning = !bgMusicPlaySucceededRef.current;
+    if (fromBeginning) el.currentTime = 0;
+    const markOk = () => {
+      if (fromBeginning) bgMusicPlaySucceededRef.current = true;
+    };
+    el.muted = false;
+    void el
+      .play()
+      .then(markOk)
+      .catch(() => {
+        el.muted = true;
+        void el.play().then(markOk).catch(() => {});
+      });
+  }, []);
+
+  const onUserPointerForMedia = useCallback(() => {
+    const v = introVideoRef.current;
+    if (v && !isOpened) {
+      v.muted = false;
+      setIntroMuted(false);
+      void v.play();
+    }
+    tryPlayBackgroundMusic();
+  }, [isOpened, tryPlayBackgroundMusic]);
 
   useEffect(() => {
     if (!isOpened && wasInvitationOpenedRef.current) {
@@ -211,32 +250,19 @@ export default function WeddingInvitation() {
   }, [isOpened]);
 
   useEffect(() => {
-    const handleFirstInteraction = async () => {
-      if (!hasInteracted) {
-        setHasInteracted(true);
-        const v = introVideoRef.current;
-        if (v && !isOpened) {
-          v.muted = false;
-          setIntroMuted(false);
-          v.play().catch(console.error);
-        }
-        await startMusic();
-      }
-    };
-
-    // Broad set of events for mobile compatibility (touchstart is critical on iOS)
-    window.addEventListener("click", handleFirstInteraction, { once: true, capture: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { once: true, capture: true, passive: true });
-    window.addEventListener("mousedown", handleFirstInteraction, { once: true, capture: true });
-    window.addEventListener("keydown", handleFirstInteraction, { once: true, capture: true });
-
+    const opts: AddEventListenerOptions = { capture: true, passive: true };
+    document.addEventListener("pointerdown", onUserPointerForMedia, opts);
+    document.addEventListener("touchstart", onUserPointerForMedia, opts);
     return () => {
-      window.removeEventListener("click", handleFirstInteraction, true);
-      window.removeEventListener("touchstart", handleFirstInteraction, true);
-      window.removeEventListener("mousedown", handleFirstInteraction, true);
-      window.removeEventListener("keydown", handleFirstInteraction, true);
+      document.removeEventListener("pointerdown", onUserPointerForMedia, true);
+      document.removeEventListener("touchstart", onUserPointerForMedia, true);
     };
-  }, [hasInteracted, isOpened, startMusic]);
+  }, [onUserPointerForMedia]);
+
+  const introVideoRefCallback = useCallback((node: HTMLVideoElement | null) => {
+    introVideoRef.current = node;
+    if (node) introBootstrappedRef.current = false;
+  }, []);
 
   const submitToGoogleSheet = async (payload: Record<string, string>) => {
     if (!googleScriptUrl) {
@@ -325,25 +351,25 @@ export default function WeddingInvitation() {
           setIntroMuted(false);
           void video.play().catch(() => {});
         }
+        kickBackgroundMusicAfterIntroVideo();
       })
       .catch(() => {
         introBootstrappedRef.current = false;
         setIntroPlayBlocked(true);
       });
-  }, []);
+  }, [kickBackgroundMusicAfterIntroVideo]);
 
   const handleTapToPlayIntro = useCallback(() => {
     const v = introVideoRef.current;
     if (!v) return;
-    setHasInteracted(true);
     introBootstrappedRef.current = true;
     v.currentTime = 0;
     v.muted = false;
     setIntroMuted(false);
     setIntroPlayBlocked(false);
     void v.play().catch(console.error);
-    void startMusic();
-  }, [startMusic]);
+    tryPlayBackgroundMusic();
+  }, [tryPlayBackgroundMusic]);
 
   return (
     <main
@@ -359,19 +385,21 @@ export default function WeddingInvitation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
-            className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center overflow-hidden touch-manipulation"
+            onPointerDownCapture={onUserPointerForMedia}
+            onTouchStartCapture={onUserPointerForMedia}
           >
             <video
-              ref={introVideoRef}
+              ref={introVideoRefCallback}
               src="/intro_video.mp4"
               autoPlay
               muted={introMuted}
               playsInline
               preload="auto"
-              className="w-full h-full object-cover"
+              className="w-full h-full min-h-0 object-cover pointer-events-auto"
               onLoadedData={(e) => bootstrapIntroPlayback(e.currentTarget)}
               onCanPlay={(e) => bootstrapIntroPlayback(e.currentTarget)}
-              onEnded={() => { setIsOpened(true); startMusic(); }}
+              onEnded={() => { setIsOpened(true); tryPlayBackgroundMusic(); }}
               onError={() => setIsOpened(true)}
             />
 
@@ -390,7 +418,7 @@ export default function WeddingInvitation() {
 
             <button
               type="button"
-              onClick={() => { setIsOpened(true); startMusic(); }}
+              onClick={() => { setIsOpened(true); tryPlayBackgroundMusic(); }}
               className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold touch-manipulation"
             >
               Skip Video
@@ -920,7 +948,15 @@ export default function WeddingInvitation() {
         )}
       </AnimatePresence>
 
-      <audio ref={audioRef} src={backgroundMusic} loop preload="auto" />
+      <audio
+        ref={audioRef}
+        src={backgroundMusic}
+        loop
+        preload="auto"
+        autoPlay
+        className="sr-only"
+        aria-hidden
+      />
 
       <style dangerouslySetInnerHTML={{
         __html: `
