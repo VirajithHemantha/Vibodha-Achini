@@ -13,6 +13,15 @@ const brideGroomImage = "/images/10.png";
 const backgroundMusic = "/bg_music.mp3";
 const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
 
+/** iOS / Android block unmuted autoplay; iPadOS may report as MacIntel. */
+function isLikelyMobileOrTablet() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  if (/iPhone|iPad|iPod|Android/i.test(ua)) return true;
+  if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) return true;
+  return false;
+}
+
 function FloatingPetals() {
   const [isLowPowerMode, setIsLowPowerMode] = useState(false);
   const [petals, setPetals] = useState<Array<{
@@ -168,8 +177,12 @@ export default function WeddingInvitation() {
   const [rsvpStatus, setRsvpStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [wishStatus, setWishStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [introMuted, setIntroMuted] = useState(true);
+  const [introPlayBlocked, setIntroPlayBlocked] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const introVideoRef = React.useRef<HTMLVideoElement>(null);
+  const introBootstrappedRef = React.useRef(false);
+  const wasInvitationOpenedRef = React.useRef(false);
   /** First play must stay synchronous with a user gesture (no setTimeout) or mobile browsers block it. */
   const hasStartedBackgroundMusic = React.useRef(false);
 
@@ -189,29 +202,39 @@ export default function WeddingInvitation() {
   }, []);
 
   useEffect(() => {
+    if (!isOpened && wasInvitationOpenedRef.current) {
+      introBootstrappedRef.current = false;
+      setIntroPlayBlocked(false);
+      setIntroMuted(true);
+    }
+    wasInvitationOpenedRef.current = isOpened;
+  }, [isOpened]);
+
+  useEffect(() => {
     const handleFirstInteraction = async () => {
       if (!hasInteracted) {
         setHasInteracted(true);
         const v = introVideoRef.current;
         if (v && !isOpened) {
           v.muted = false;
+          setIntroMuted(false);
           v.play().catch(console.error);
         }
         await startMusic();
       }
     };
 
-    // Broad set of events for mobile compatibility
-    window.addEventListener("click", handleFirstInteraction, { once: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { once: true });
-    window.addEventListener("mousedown", handleFirstInteraction, { once: true });
-    window.addEventListener("keydown", handleFirstInteraction, { once: true });
+    // Broad set of events for mobile compatibility (touchstart is critical on iOS)
+    window.addEventListener("click", handleFirstInteraction, { once: true, capture: true });
+    window.addEventListener("touchstart", handleFirstInteraction, { once: true, capture: true, passive: true });
+    window.addEventListener("mousedown", handleFirstInteraction, { once: true, capture: true });
+    window.addEventListener("keydown", handleFirstInteraction, { once: true, capture: true });
 
     return () => {
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("mousedown", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("click", handleFirstInteraction, true);
+      window.removeEventListener("touchstart", handleFirstInteraction, true);
+      window.removeEventListener("mousedown", handleFirstInteraction, true);
+      window.removeEventListener("keydown", handleFirstInteraction, true);
     };
   }, [hasInteracted, isOpened, startMusic]);
 
@@ -279,14 +302,48 @@ export default function WeddingInvitation() {
     }
   };
 
-  const playIntroFromStart = useCallback((video: HTMLVideoElement) => {
+  /** Mobile: must autoplay muted + inline; desktop: unmute right after play succeeds. */
+  const bootstrapIntroPlayback = useCallback((video: HTMLVideoElement) => {
+    if (introBootstrappedRef.current) return;
+    introBootstrappedRef.current = true;
+
+    video.setAttribute("playsinline", "true");
+    video.setAttribute("webkit-playsinline", "true");
+    video.playsInline = true;
     video.currentTime = 0;
-    video.muted = false;
-    video.play().catch(() => {
-      video.muted = true;
-      video.play().catch(console.error);
-    });
+
+    const mobile = isLikelyMobileOrTablet();
+    video.muted = true;
+    setIntroMuted(true);
+
+    void video
+      .play()
+      .then(() => {
+        setIntroPlayBlocked(false);
+        if (!mobile) {
+          video.muted = false;
+          setIntroMuted(false);
+          void video.play().catch(() => {});
+        }
+      })
+      .catch(() => {
+        introBootstrappedRef.current = false;
+        setIntroPlayBlocked(true);
+      });
   }, []);
+
+  const handleTapToPlayIntro = useCallback(() => {
+    const v = introVideoRef.current;
+    if (!v) return;
+    setHasInteracted(true);
+    introBootstrappedRef.current = true;
+    v.currentTime = 0;
+    v.muted = false;
+    setIntroMuted(false);
+    setIntroPlayBlocked(false);
+    void v.play().catch(console.error);
+    void startMusic();
+  }, [startMusic]);
 
   return (
     <main
@@ -308,18 +365,33 @@ export default function WeddingInvitation() {
               ref={introVideoRef}
               src="/intro_video.mp4"
               autoPlay
+              muted={introMuted}
               playsInline
               preload="auto"
               className="w-full h-full object-cover"
-              onLoadedData={(e) => playIntroFromStart(e.currentTarget)}
+              onLoadedData={(e) => bootstrapIntroPlayback(e.currentTarget)}
+              onCanPlay={(e) => bootstrapIntroPlayback(e.currentTarget)}
               onEnded={() => { setIsOpened(true); startMusic(); }}
               onError={() => setIsOpened(true)}
             />
 
+            {introPlayBlocked && (
+              <button
+                type="button"
+                onClick={handleTapToPlayIntro}
+                className="absolute inset-0 z-[105] flex flex-col items-center justify-center gap-3 bg-black/35 px-6 text-center text-white backdrop-blur-[2px] touch-manipulation"
+              >
+                <span className="font-cinzel text-sm uppercase tracking-[0.35em]">Tap to play</span>
+                <span className="max-w-xs text-[11px] font-montserrat leading-relaxed text-white/85">
+                  Your browser needs a tap to start the video and music.
+                </span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => { setIsOpened(true); startMusic(); }}
-              className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold"
+              className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold touch-manipulation"
             >
               Skip Video
             </button>
