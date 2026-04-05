@@ -165,21 +165,26 @@ export default function WeddingInvitation() {
     name: "",
     message: "",
   });
-  const [isVideoStarted, setIsVideoStarted] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [wishStatus, setWishStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [hasInteracted, setHasInteracted] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const introVideoRef = React.useRef<HTMLVideoElement>(null);
+  /** First play must stay synchronous with a user gesture (no setTimeout) or mobile browsers block it. */
+  const hasStartedBackgroundMusic = React.useRef(false);
 
   const startMusic = useCallback(async () => {
-    if (audioRef.current) {
-      try {
-        audioRef.current.muted = false;
-        await audioRef.current.play();
-      } catch (err) {
-        console.error("Audio playback failed:", err);
+    const el = audioRef.current;
+    if (!el) return;
+    try {
+      el.muted = false;
+      if (!hasStartedBackgroundMusic.current) {
+        el.currentTime = 0;
+        hasStartedBackgroundMusic.current = true;
       }
+      await el.play();
+    } catch (err) {
+      console.error("Audio playback failed:", err);
     }
   }, []);
 
@@ -187,6 +192,11 @@ export default function WeddingInvitation() {
     const handleFirstInteraction = async () => {
       if (!hasInteracted) {
         setHasInteracted(true);
+        const v = introVideoRef.current;
+        if (v && !isOpened) {
+          v.muted = false;
+          v.play().catch(console.error);
+        }
         await startMusic();
       }
     };
@@ -203,7 +213,7 @@ export default function WeddingInvitation() {
       window.removeEventListener("mousedown", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
     };
-  }, [hasInteracted, startMusic]);
+  }, [hasInteracted, isOpened, startMusic]);
 
   const submitToGoogleSheet = async (payload: Record<string, string>) => {
     if (!googleScriptUrl) {
@@ -269,23 +279,14 @@ export default function WeddingInvitation() {
     }
   };
 
-  // Handle user tap to start everything
-  const handleStartEverything = () => {
-    setIsVideoStarted(true);
-    setHasInteracted(true);
-    if (introVideoRef.current) {
-      introVideoRef.current.muted = false;
-      introVideoRef.current.play().catch(console.error);
-    }
-    startMusic();
-  };
-
-  // Keep interaction for other elements just in case
-  const handleIntroInteraction = () => {
-    if (!hasInteracted) {
-      handleStartEverything();
-    }
-  };
+  const playIntroFromStart = useCallback((video: HTMLVideoElement) => {
+    video.currentTime = 0;
+    video.muted = false;
+    video.play().catch(() => {
+      video.muted = true;
+      video.play().catch(console.error);
+    });
+  }, []);
 
   return (
     <main
@@ -301,126 +302,27 @@ export default function WeddingInvitation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
-            className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center cursor-pointer overflow-hidden"
-            onClick={handleIntroInteraction}
-            onTouchStart={handleIntroInteraction}
+            className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center overflow-hidden"
           >
-            {isVideoStarted ? (
-              <video
-                ref={introVideoRef}
-                src="/intro_video.mp4"
-                autoPlay
-                playsInline
-                preload="auto"
-                className="w-full h-full object-cover"
-                onEnded={() => { setIsOpened(true); startMusic(); }}
-                onError={() => setIsOpened(true)}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center min-h-screen text-center p-6 relative w-full overflow-hidden">
-                {/* Floral Corner Decorations */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50, y: -50 }}
-                  animate={{ opacity: 0.15, x: 0, y: 0 }}
-                  transition={{ duration: 2 }}
-                  className="absolute top-0 left-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none"
-                >
-                  <img src="/images/12.png" alt="Flowers" className="w-full h-full object-contain -rotate-12 opacity-80" />
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: 50, y: 50 }}
-                  animate={{ opacity: 0.15, x: 0, y: 0 }}
-                  transition={{ duration: 2 }}
-                  className="absolute bottom-0 right-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none"
-                >
-                  <img src="/images/12.png" alt="Flowers" className="w-full h-full object-contain rotate-[168deg] opacity-80" />
-                </motion.div>
+            <video
+              ref={introVideoRef}
+              src="/intro_video.mp4"
+              autoPlay
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover"
+              onLoadedData={(e) => playIntroFromStart(e.currentTarget)}
+              onEnded={() => { setIsOpened(true); startMusic(); }}
+              onError={() => setIsOpened(true)}
+            />
 
-                <div className="relative flex flex-col items-center gap-12 z-20">
-                  <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
-                    {/* Animated Floral Halo */}
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 opacity-20"
-                    >
-                      <img src="/images/12.png" alt="" className="w-full h-full object-contain" />
-                    </motion.div>
-
-                    {/* Multiple ripple rings for premium feel */}
-                    <motion.div
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0, 0.4] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute inset-0 border border-[#c5a059]/30 rounded-full"
-                    />
-                    <motion.div
-                      animate={{ scale: [1.2, 1.6, 1.2], opacity: [0.2, 0, 0.2] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                      className="absolute inset-0 border border-[#c5a059]/20 rounded-full"
-                    />
-
-                    {/* The Custom Generated Floral Button Image */}
-                    <div className="relative group">
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleStartEverything}
-                        className="relative z-10 w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-[0_30px_70px_-15px_rgba(135,147,122,0.4)] cursor-pointer border-4 border-white ring-1 ring-[#c5a059]/30 transition-all duration-700"
-                      >
-                        <img
-                          src="/images/intro_button.png"
-                          alt="Open Invitation"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                        />
-                      </motion.div>
-
-                      {/* Subtle floating sparkle accent */}
-                      <motion.div
-                        animate={{
-                          y: [0, -15, 0],
-                          opacity: [0, 1, 0]
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }}
-                        className="absolute -top-4 -right-4"
-                      >
-                        <Sparkles className="text-[#c5a059] w-8 h-8 opacity-40 shadow-sm" />
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-8">
-                    <div className="flex flex-col items-center gap-4">
-                      <h3 className="font-cinzel text-xl md:text-2xl text-slate-800 tracking-[0.4em] uppercase font-bold">The Royal Invitation</h3>
-                      <div className="flex items-center gap-4">
-                        <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#ccbaa2]" />
-                        <p className="font-playball text-3xl md:text-4xl text-[#c5a059]">Umayangana & Ashan</p>
-                        <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#ccbaa2]" />
-                      </div>
-                    </div>
-
-                    <motion.div
-                      animate={{ y: [0, 5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <p className="text-[#87937a] text-[10px] md:text-xs uppercase tracking-[0.6em] font-bold opacity-80">Tap to Blossom into our Love Story</p>
-                    </motion.div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {isVideoStarted && (
-              <button
-                onClick={(e) => { e.stopPropagation(); setIsOpened(true); startMusic(); }}
-                className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold"
-              >
-                Skip Video
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => { setIsOpened(true); startMusic(); }}
+              className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold"
+            >
+              Skip Video
+            </button>
           </motion.div>
         ) : (
           <motion.div
