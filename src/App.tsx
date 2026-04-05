@@ -157,6 +157,8 @@ export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
     name: "",
+    place: "",
+    attending: "yes",
     guests: "1",
   });
   const [wishForm, setWishForm] = useState({
@@ -228,11 +230,13 @@ export default function WeddingInvitation() {
       await submitToGoogleSheet({
         action: "rsvp",
         name: rsvpForm.name.trim(),
-        guests: rsvpForm.guests,
+        place: rsvpForm.place.trim(),
+        attending: rsvpForm.attending,
+        guests: rsvpForm.attending === "yes" ? rsvpForm.guests : "0",
         dietaryNotes: "",
       });
       setRsvpStatus("success");
-      setRsvpForm({ name: "", guests: "1" });
+      setRsvpForm({ name: "", place: "", attending: "yes", guests: "1" });
     } catch {
       setRsvpStatus("error");
     }
@@ -612,33 +616,71 @@ export default function WeddingInvitation() {
                           />
                         </div>
 
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 ml-1">Your Place</label>
+                          <input
+                            type="text"
+                            placeholder="City / Area Name..."
+                            value={rsvpForm.place}
+                            onChange={(e) => {
+                              setRsvpStatus("idle");
+                              setRsvpForm((prev) => ({ ...prev, place: e.target.value }));
+                            }}
+                            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-cinzel text-base"
+                            required
+                          />
+                        </div>
+
                         <div className="space-y-4 pt-2">
                           <label className="text-xs font-bold text-slate-500 ml-1">Will you join us on our big day?</label>
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setRsvpStatus("idle");
-                              setRsvpForm((prev) => ({ ...prev, guests: "1" }));
-                            }}
-                            aria-pressed={rsvpForm.guests !== "0"}
-                            className="w-full bg-[#f3f3f3] hover:bg-slate-200 text-slate-700 py-5 md:py-6 rounded-xl font-cinzel text-[11px] md:text-sm tracking-wide transition-all shadow-sm flex items-center justify-center px-4 leading-relaxed active:scale-[0.98]"
-                          >
-                            Yes, I'll be there!
-                          </button>
+                          <div className="flex flex-col gap-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRsvpStatus("idle");
+                                setRsvpForm((prev) => ({ ...prev, attending: "yes" }));
+                              }}
+                              className={`w-full py-4 md:py-5 rounded-xl font-cinzel text-[11px] md:text-sm tracking-wide transition-all shadow-sm flex items-center justify-center px-4 leading-relaxed active:scale-[0.98] ${rsvpForm.attending === "yes" ? "bg-[#708da9] text-white shadow-md" : "bg-[#f3f3f3] text-slate-700 hover:bg-slate-200"}`}
+                            >
+                              Yes, I'll be there!
+                            </button>
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setRsvpStatus("idle");
-                              setRsvpForm((prev) => ({ ...prev, guests: "0" }));
-                            }}
-                            aria-pressed={rsvpForm.guests === "0"}
-                            className="w-full bg-[#f3f3f3] hover:bg-slate-200 text-slate-700 py-5 md:py-6 rounded-xl font-cinzel text-[11px] md:text-sm tracking-wide transition-all shadow-sm flex items-center justify-center px-4 leading-relaxed active:scale-[0.98]"
-                          >
-                            Sadly I can't attend, but you're in my heart
-                          </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRsvpStatus("idle");
+                                setRsvpForm((prev) => ({ ...prev, attending: "no" }));
+                              }}
+                              className={`w-full py-4 md:py-5 rounded-xl font-cinzel text-[11px] md:text-sm tracking-wide transition-all shadow-sm flex items-center justify-center px-4 leading-relaxed active:scale-[0.98] ${rsvpForm.attending === "no" ? "bg-[#708da9] text-white shadow-md" : "bg-[#f3f3f3] text-slate-700 hover:bg-slate-200"}`}
+                            >
+                              Sadly I can't attend
+                            </button>
+                          </div>
                         </div>
+
+                        {rsvpForm.attending === "yes" && (
+                          <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-500">
+                            <label className="text-xs font-bold text-slate-500 ml-1">Number of Guests</label>
+                            <div className="relative">
+                              <select
+                                value={rsvpForm.guests}
+                                onChange={(e) => {
+                                  setRsvpStatus("idle");
+                                  setRsvpForm((prev) => ({ ...prev, guests: e.target.value }));
+                                }}
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-cinzel text-base appearance-none cursor-pointer"
+                              >
+                                {[1, 2, 3, 4, 5, 6].map(num => (
+                                  <option key={num} value={num.toString()}>{num} {num === 1 ? 'Guest' : 'Guests'}</option>
+                                ))}
+                              </select>
+                              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <ChevronDown size={16} />
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {(rsvpStatus === "success" || rsvpStatus === "error") && (
                           <p className={`text-[10px] text-center font-semibold ${rsvpStatus === "success" ? "text-emerald-600" : "text-red-500"}`}>
