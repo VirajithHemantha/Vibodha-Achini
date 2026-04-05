@@ -10,7 +10,7 @@ import { Sparkles, MapPin, Calendar, Clock, Send, ChevronDown } from "lucide-rea
  */
 
 const brideGroomImage = "/images/10.png";
-const backgroundMusic = "/01-Alex_Warren_-_Ordinary_(Wedding_version).mp3";
+const backgroundMusic = "/bg_music.mp3";
 const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
 
 function FloatingPetals() {
@@ -183,20 +183,23 @@ export default function WeddingInvitation() {
   }, []);
 
   useEffect(() => {
-    const handleFirstInteraction = () => {
+    const handleFirstInteraction = async () => {
       if (!hasInteracted) {
         setHasInteracted(true);
-        startMusic();
+        await startMusic();
       }
     };
 
-    window.addEventListener("mousedown", handleFirstInteraction, { once: true });
+    // Broad set of events for mobile compatibility
+    window.addEventListener("click", handleFirstInteraction, { once: true });
     window.addEventListener("touchstart", handleFirstInteraction, { once: true });
+    window.addEventListener("mousedown", handleFirstInteraction, { once: true });
     window.addEventListener("keydown", handleFirstInteraction, { once: true });
 
     return () => {
-      window.removeEventListener("mousedown", handleFirstInteraction);
+      window.removeEventListener("click", handleFirstInteraction);
       window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("mousedown", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
     };
   }, [hasInteracted, startMusic]);
@@ -289,6 +292,7 @@ export default function WeddingInvitation() {
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
             className="fixed inset-0 z-[100] bg-black flex items-center justify-center cursor-pointer"
             onClick={handleIntroInteraction}
+            onTouchStart={handleIntroInteraction}
           >
             <video
               ref={introVideoRef}
@@ -824,7 +828,7 @@ export default function WeddingInvitation() {
         )}
       </AnimatePresence>
 
-      <audio ref={audioRef} src={backgroundMusic} loop autoPlay preload="auto" />
+      <audio ref={audioRef} src={backgroundMusic} loop preload="auto" />
 
       <style dangerouslySetInnerHTML={{
         __html: `

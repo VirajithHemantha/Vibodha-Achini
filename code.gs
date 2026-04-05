@@ -53,12 +53,15 @@ function saveRsvp_(params) {
   ensureHeader_(sheet, [
     "timestamp",
     "name",
+    "place",
     "guests",
     "attendance",
     "dietaryNotes",
   ]);
 
   const name = String(params.name || "").trim();
+  const place = String(params.place || "").trim();
+  const attending = String(params.attending || "").trim();
   const guests = String(params.guests || "").trim();
   const dietaryNotes = String(params.dietaryNotes || "").trim();
 
@@ -66,11 +69,12 @@ function saveRsvp_(params) {
     return { ok: false, message: "Name is required" };
   }
 
-  const attendance = guests === "0" ? "Declined" : "Attending";
+  const attendance = attending === "no" ? "Declined" : "Attending";
 
   sheet.appendRow([
     new Date(),
     name,
+    place,
     guests || "1",
     attendance,
     dietaryNotes,
