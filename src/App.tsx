@@ -929,7 +929,7 @@ export default function WeddingInvitation() {
                     <div className="flex flex-col sm:flex-row gap-4">
                       <button
                         onClick={() =>
-                          window.open("https://maps.app.goo.gl/r5yvS6W3b7x3pYvB9", "_blank")
+                          window.open("https://maps.app.goo.gl/Fw6MGDC4ifQxHhRLA", "_blank")
                         }
                         className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#87937a] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#7a866d]"
                       >
