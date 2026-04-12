@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, ChevronDown, Volume2, VolumeX, X, Hotel } from "lucide-react";
+import { Sparkles, MapPin, ChevronDown, Volume2, VolumeX, X, Hotel, MailOpen } from "lucide-react";
+import EnvelopeOpener from "./components/EnvelopeOpener";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
@@ -131,31 +132,30 @@ function CountdownTimer() {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2 sm:gap-4 md:gap-8 justify-center w-full max-w-4xl mx-auto mt-8 md:mt-16 z-20 px-2 lg:content-visibility-auto">
+    <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-10 justify-center w-full max-w-4xl mx-auto mt-8 md:mt-12 z-20 px-4">
       {stats.map((stat, i) => (
         <motion.div
           key={stat.label}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: i * 0.15, type: "spring", stiffness: 80 }}
+          transition={{ delay: i * 0.15, duration: 0.8, ease: "easeOut" }}
           className="relative group"
         >
-          <div className="relative w-[4.5rem] h-[6.5rem] sm:w-20 sm:h-28 md:w-32 md:h-44 bg-white rounded-t-full shadow-[0_15px_35px_-10px_rgba(0,0,0,0.08)] border border-theme-100/60 flex flex-col items-center justify-center overflow-hidden transition-transform duration-700 group-hover:-translate-y-3">
-            <div className="absolute top-0 right-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] w-full h-full pointer-events-none" />
-            <div className="absolute inset-1.5 sm:inset-2 md:inset-3 border-[0.5px] border-theme-300/50 rounded-t-full pointer-events-none" />
+          <div className="relative w-[5.5rem] h-[5.5rem] sm:w-24 sm:h-24 md:w-32 md:h-32 bg-[#fdfaf5] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-[#d4af37]/30 flex flex-col items-center justify-center overflow-hidden transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_15px_40px_-15px_rgba(212,175,55,0.3)]">
+            {/* Inner elegant border */}
+            <div className="absolute inset-1.5 md:inset-2 border-[0.5px] border-[#d4af37]/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/white-marble.png')] opacity-40 pointer-events-none" />
 
-            <span className="text-2xl sm:text-3xl md:text-5xl font-playball text-theme-800 leading-none relative z-10 drop-shadow-sm mt-3 sm:mt-4 md:mt-6 transition-transform duration-500 group-hover:scale-110">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-serif text-slate-800 leading-none relative z-10 transition-transform duration-500 group-hover:scale-105">
               {Math.max(0, stat.value).toString().padStart(2, "0")}
             </span>
 
-            <div className="w-full flex justify-center mt-2 sm:mt-3 md:mt-6 mb-1 sm:mb-2 relative z-10">
-              <span className="text-[5px] sm:text-[6px] md:text-[8px] uppercase tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.4em] text-stone-500 font-bold px-2 sm:px-3 py-1 sm:py-1.5 bg-stone-50 rounded-full border border-theme-100/50 shadow-sm whitespace-nowrap">
+            <div className="w-full flex justify-center mt-3 relative z-10">
+              <span className="text-[7px] sm:text-[8px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-slate-500 font-medium">
                 {stat.label}
               </span>
             </div>
-
-            <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 w-[3px] h-[3px] sm:w-1 sm:h-1 md:w-1.5 md:h-1.5 rotate-45 bg-theme-300" />
           </div>
         </motion.div>
       ))}
@@ -164,7 +164,7 @@ function CountdownTimer() {
 }
 
 /** Preload critical assets */
-const criticalAssets = ["/theme_hero.png", "/images/couple_aa.png", "/floral_corner_theme.png", "/monogram_aa.png"];
+const criticalAssets = ["/monogram_aa.png"];
 function preloadAssets() {
   criticalAssets.forEach((src) => {
     const img = new Image();
@@ -261,8 +261,8 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       >
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-[#fcfcf0]">
           <div>
-            <h2 className="font-cinzel text-xl md:text-2xl text-[#c5a059] font-bold">Accommodation Rates</h2>
-            <p className="text-[10px] uppercase tracking-widest text-[#87937a] mt-1">Kithul Kanda Mountain Resort</p>
+            <h2 className="font-cinzel text-xl md:text-2xl text-[#059669] font-bold">Accommodation Rates</h2>
+            <p className="text-[10px] uppercase tracking-widest text-[#047857] mt-1">Kithul Kanda Mountain Resort</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
             <X size={24} className="text-slate-400" />
@@ -273,14 +273,14 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           <div className="space-y-12">
             <div>
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-px flex-1 bg-[#c5a059]/30" />
-                <h3 className="font-playball text-3xl text-[#c5a059]">Honeymoon Room Rates</h3>
-                <div className="h-px flex-1 bg-[#c5a059]/30" />
+                <div className="h-px flex-1 bg-[#059669]/30" />
+                <h3 className="font-playball text-3xl text-[#059669]">Honeymoon Room Rates</h3>
+                <div className="h-px flex-1 bg-[#059669]/30" />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {honeymoonRates.map((plan) => (
-                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#ccbaa2]/30 shadow-sm">
-                    <h4 className="font-cinzel text-sm font-bold text-[#87937a] mb-4 border-b border-[#ccbaa2]/20 pb-2">{plan.plan}</h4>
+                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#34d399]/30 shadow-sm">
+                    <h4 className="font-cinzel text-sm font-bold text-[#047857] mb-4 border-b border-[#34d399]/20 pb-2">{plan.plan}</h4>
                     <div className="space-y-3">
                       {plan.rooms.map((room) => (
                         <div key={room.name} className="flex justify-between items-center gap-4">
@@ -288,7 +288,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             <p className="text-xs font-bold text-slate-700">{room.name}</p>
                             <p className="text-[10px] text-slate-400">{room.view}</p>
                           </div>
-                          <p className="text-xs font-bold text-[#c5a059] whitespace-nowrap">{room.rate}</p>
+                          <p className="text-xs font-bold text-[#059669] whitespace-nowrap">{room.rate}</p>
                         </div>
                       ))}
                     </div>
@@ -297,8 +297,8 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
               </div>
             </div>
 
-            <div className="bg-[#87937a]/5 p-8 rounded-2xl border border-[#87937a]/10">
-              <h3 className="font-cinzel text-sm font-bold text-[#87937a] mb-6 uppercase tracking-widest text-center">Honeymoon Package Includes</h3>
+            <div className="bg-[#047857]/5 p-8 rounded-2xl border border-[#047857]/10">
+              <h3 className="font-cinzel text-sm font-bold text-[#047857] mb-6 uppercase tracking-widest text-center">Honeymoon Package Includes</h3>
               <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                   { icon: "🍾🍷", label: "Bottle of Wine" },
@@ -309,7 +309,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                 ].map((item) => (
                   <div key={item.label} className="flex flex-col items-center gap-2 text-center p-3">
                     <span className="text-2xl">{item.icon}</span>
-                    <span className="text-[10px] font-bold text-[#87937a] uppercase tracking-tighter leading-tight">{item.label}</span>
+                    <span className="text-[10px] font-bold text-[#047857] uppercase tracking-tighter leading-tight">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -317,14 +317,14 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
             <div>
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-px flex-1 bg-[#c5a059]/30" />
-                <h3 className="font-playball text-3xl text-[#c5a059]">Double Room Rates</h3>
-                <div className="h-px flex-1 bg-[#c5a059]/30" />
+                <div className="h-px flex-1 bg-[#059669]/30" />
+                <h3 className="font-playball text-3xl text-[#059669]">Double Room Rates</h3>
+                <div className="h-px flex-1 bg-[#059669]/30" />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {doubleRates.map((plan) => (
-                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#ccbaa2]/30 shadow-sm">
-                    <h4 className="font-cinzel text-sm font-bold text-[#87937a] mb-4 border-b border-[#ccbaa2]/20 pb-2">{plan.plan}</h4>
+                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#34d399]/30 shadow-sm">
+                    <h4 className="font-cinzel text-sm font-bold text-[#047857] mb-4 border-b border-[#34d399]/20 pb-2">{plan.plan}</h4>
                     <div className="space-y-3">
                       {plan.rooms.map((room) => (
                         <div key={room.name} className="flex justify-between items-center gap-4">
@@ -332,7 +332,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             <p className="text-xs font-bold text-slate-700">{room.name}</p>
                             <p className="text-[10px] text-slate-400">{room.view}</p>
                           </div>
-                          <p className="text-xs font-bold text-[#c5a059] whitespace-nowrap">{room.rate}</p>
+                          <p className="text-xs font-bold text-[#059669] whitespace-nowrap">{room.rate}</p>
                         </div>
                       ))}
                     </div>
@@ -344,15 +344,15 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Check In</p>
-                <p className="font-cinzel text-xl text-[#87937a]">2:00 PM</p>
+                <p className="font-cinzel text-xl text-[#047857]">2:00 PM</p>
               </div>
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Check Out</p>
-                <p className="font-cinzel text-xl text-[#87937a]">12:00 PM</p>
+                <p className="font-cinzel text-xl text-[#047857]">12:00 PM</p>
               </div>
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Availability</p>
-                <p className="font-cinzel text-sm text-[#87937a] leading-tight">Max 16 Rooms Available</p>
+                <p className="font-cinzel text-sm text-[#047857] leading-tight">Max 16 Rooms Available</p>
               </div>
             </div>
           </div>
@@ -397,14 +397,9 @@ export default function WeddingInvitation() {
   const [rsvpStatus, setRsvpStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [wishStatus, setWishStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-  const [introMuted, setIntroMuted] = useState(true);
-  const [introPlayBlocked, setIntroPlayBlocked] = useState(false);
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
   const [musicAudible, setMusicAudible] = useState(true);
-
   const audioRef = useRef<HTMLAudioElement>(null);
-  const introVideoRef = useRef<HTMLVideoElement>(null);
-  const introBootstrappedRef = useRef(false);
+  const audioUnlockedRef = useRef(false);
   const hasStartedMusicRef = useRef(false);
 
   const playMusic = useCallback(async () => {
@@ -440,25 +435,14 @@ export default function WeddingInvitation() {
   }, []);
 
   const unlockAudioFromGesture = useCallback(async () => {
-    if (audioUnlocked) return;
+    if (audioUnlockedRef.current) return;
 
     const ok = await playMusic();
 
     if (!ok) {
       await playMutedMusicFallback();
     }
-
-    const video = introVideoRef.current;
-    if (video && !isOpened) {
-      try {
-        video.muted = false;
-        setIntroMuted(false);
-        await video.play();
-      } catch {
-        // ignore
-      }
-    }
-  }, [audioUnlocked, isOpened, playMusic, playMutedMusicFallback]);
+  }, [playMusic, playMutedMusicFallback]);
 
   const handleSoundToggle = useCallback(() => {
     const audio = audioRef.current;
@@ -493,69 +477,11 @@ export default function WeddingInvitation() {
     };
   }, [unlockAudioFromGesture]);
 
-  const introVideoRefCallback = useCallback((node: HTMLVideoElement | null) => {
-    introVideoRef.current = node;
-    if (node) introBootstrappedRef.current = false;
-  }, []);
-
-  const bootstrapIntroPlayback = useCallback(async (video: HTMLVideoElement) => {
-    if (introBootstrappedRef.current) return;
-    introBootstrappedRef.current = true;
-
-    video.setAttribute("playsinline", "true");
-    video.setAttribute("webkit-playsinline", "true");
-    video.playsInline = true;
-    video.currentTime = 0;
-
-    const mobile = isLikelyMobileOrTablet();
-
-    video.muted = true;
-    setIntroMuted(true);
-
-    try {
-      await video.play();
-      setIntroPlayBlocked(false);
-
-      if (!mobile) {
-        try {
-          video.muted = false;
-          setIntroMuted(false);
-          await video.play();
-        } catch {
-          // ignore desktop unmute failure
-        }
-      }
-
-      if (!mobile && !hasStartedMusicRef.current) {
-        const ok = await playMusic();
-        if (!ok) {
-          await playMutedMusicFallback();
-        }
-      }
-    } catch {
-      introBootstrappedRef.current = false;
-      setIntroPlayBlocked(true);
+  useEffect(() => {
+    if (isOpened) {
+      preloadAssets();
     }
-  }, [playMusic, playMutedMusicFallback]);
-
-  const handleTapToPlayIntro = useCallback(async () => {
-    const video = introVideoRef.current;
-    if (!video) return;
-
-    introBootstrappedRef.current = true;
-    video.currentTime = 0;
-    video.muted = false;
-    setIntroMuted(false);
-    setIntroPlayBlocked(false);
-
-    try {
-      await video.play();
-    } catch {
-      // ignore
-    }
-
-    await unlockAudioFromGesture();
-  }, [unlockAudioFromGesture]);
+  }, [isOpened]);
 
   const submitToGoogleSheet = async (payload: Record<string, string>) => {
     if (!googleScriptUrl) {
@@ -633,70 +559,16 @@ export default function WeddingInvitation() {
       <AnimatePresence mode="wait">
         {!isOpened ? (
           <motion.div
-            key="video-stage"
+            key="envelope-stage"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
             className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center overflow-hidden touch-manipulation"
-            onPointerDownCapture={() => {
-              void unlockAudioFromGesture();
-            }}
-            onTouchStartCapture={() => {
-              void unlockAudioFromGesture();
-            }}
           >
-            <video
-              ref={introVideoRefCallback}
-              src="/intro_video.mp4"
-              autoPlay
-              muted={introMuted}
-              playsInline
-              preload="auto"
-              className="w-full h-full min-h-0 object-cover pointer-events-auto"
-              onLoadedData={(e) => {
-                void bootstrapIntroPlayback(e.currentTarget);
-                preloadAssets(); // Start preloading images while video plays
-              }}
-              onCanPlay={(e) => {
-                void bootstrapIntroPlayback(e.currentTarget);
-              }}
-              onEnded={() => {
-                setIsOpened(true);
-              }}
-              onError={() => setIsOpened(true)}
-            />
-
-            {introPlayBlocked && (
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  void handleTapToPlayIntro();
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    void handleTapToPlayIntro();
-                  }
-                }}
-                className="absolute inset-0 z-[105] flex flex-col items-center justify-center gap-3 bg-black/35 px-6 text-center text-white backdrop-blur-[2px] touch-manipulation"
-              >
-                <span className="font-cinzel text-sm uppercase tracking-[0.35em]">Tap anywhere</span>
-                <span className="max-w-xs text-[11px] font-montserrat leading-relaxed text-white/85">
-                  Your browser needs one tap to start video and music.
-                </span>
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={() => {
-                void unlockAudioFromGesture();
-                setIsOpened(true);
-              }}
-              className="absolute bottom-10 right-10 z-[110] px-6 py-2 bg-white/20 backdrop-blur-md text-white text-xs uppercase tracking-widest rounded-full border border-white/30 hover:bg-white/40 transition-all font-bold touch-manipulation"
-            >
-              Skip Video
-            </button>
+            <EnvelopeOpener onOpen={() => {
+              setIsOpened(true);
+              void unlockAudioFromGesture();
+            }} />
           </motion.div>
         ) : (
           <motion.div
@@ -722,38 +594,96 @@ export default function WeddingInvitation() {
               </div>
             </motion.button>
 
-            <section className="w-full relative flex flex-col bg-white overflow-hidden">
-              <picture className="w-full flex items-start">
-                <source
-                  media="(max-width: 768px)"
-                  srcSet="/theme_hero.png"
-                />
-                <img
-                  src="/theme_hero.png"
-                  alt="Wedding Invitation Hero"
-                  loading="eager"
-                  fetchPriority="high"
-                  className="w-full h-screen object-cover object-center"
-                />
-              </picture>
+            <section className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden bg-marble-emerald px-6 py-12 md:p-16 z-10">
+              {/* Add a subtle dark vignette to enhance the premium depth */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] pointer-events-none z-0"></div>
+
+              {/* Premium Gold Frame */}
+              <div className="absolute inset-3 md:inset-5 border border-[#d4af37]/20 pointer-events-none z-10 rounded-sm"></div>
+              <div className="absolute inset-4 md:inset-6 border-[1.5px] border-[#d4af37]/40 pointer-events-none z-10 rounded-sm shadow-[inset_0_0_20px_rgba(212,175,55,0.1)]"></div>
+              <div className="absolute top-8 left-8 w-12 h-12 md:w-16 md:h-16 border-t-[3px] border-l-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
+              <div className="absolute top-8 right-8 w-12 h-12 md:w-16 md:h-16 border-t-[3px] border-r-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
+              <div className="absolute bottom-8 left-8 w-12 h-12 md:w-16 md:h-16 border-b-[3px] border-l-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
+              <div className="absolute bottom-8 right-8 w-12 h-12 md:w-16 md:h-16 border-b-[3px] border-r-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
+
+              <div className="w-full max-w-2xl relative z-20 flex flex-col items-center justify-center text-center mt-[-4vh]">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+                  className="space-y-6 md:space-y-8 flex flex-col items-center w-full"
+                >
+                  <div className="w-20 md:w-28 opacity-70 mb-2 md:mb-4 select-none">
+                    <img src="/monogram_aa.png" alt="AA" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                  </div>
+
+                  <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.4em] text-[#f7e7ce] uppercase font-medium drop-shadow-md">
+                    Together with their families
+                  </p>
+                  
+                  <div className="space-y-2 md:space-y-4 pt-2">
+                    <h1 className="font-alex text-7xl md:text-[8.5rem] text-gold-gradient leading-[0.8] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] select-none py-2">
+                      Ama
+                    </h1>
+                    
+                    <div className="flex items-center justify-center gap-4">
+                       <p className="font-serif text-xl md:text-2xl text-[#d4af37] italic opacity-80 drop-shadow-md">and</p>
+                    </div>
+                    
+                    <h1 className="font-alex text-7xl md:text-[8.5rem] text-gold-gradient leading-[0.8] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] select-none py-2">
+                      Anjana
+                    </h1>
+                  </div>
+
+                  <div className="space-y-6 pt-6 md:pt-10">
+                    <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.3em] text-[#f7e7ce] uppercase leading-relaxed font-medium drop-shadow-md">
+                      Request the honor of your presence<br/>at their wedding
+                    </p>
+                    
+                    <div className="flex flex-col items-center gap-3">
+                      <p className="font-serif text-lg md:text-2xl text-white tracking-widest font-bold italic drop-shadow-md">
+                        Saturday, May 09, 2026
+                      </p>
+                      <p className="font-serif text-[13px] md:text-[16px] text-[#f7e7ce]/90 italic drop-shadow-md">
+                        at three o'clock in the afternoon
+                      </p>
+                    </div>
+                    
+                    <div className="pt-4 flex flex-col items-center gap-2">
+                      <div className="h-[0.5px] w-16 bg-[#d4af37]/60 mb-2 shadow-[0_0_5px_rgba(212,175,55,0.4)]"></div>
+                      <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.2em] text-[#fdfaf5] uppercase text-center font-medium leading-loose drop-shadow-md">
+                        WEDDING VENUE<br/>
+                        KITHUL KANDA MOUNTAIN RESORT<br/>
+                        MEEGODA, SL
+                      </p>
+                      <p className="font-serif text-[12px] md:text-[14px] text-[#d4af37] italic mt-2 font-bold drop-shadow-md">
+                        Reception to follow
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2, duration: 1 }}
+                className="absolute bottom-8 md:bottom-10 z-30"
+              >
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <p className="text-[9px] uppercase tracking-[0.4em] text-[#d4af37] font-bold opacity-80">Scroll</p>
+                  <ChevronDown className="w-4 h-4 text-[#d4af37] opacity-70" />
+                </motion.div>
+              </motion.div>
             </section>
 
-            <section className="relative pt-12 md:pt-20 pb-24 md:pb-32 w-full flex flex-col items-center bg-[#ccbaa2]/10 overflow-hidden">
-              <div className="absolute top-0 left-0 w-32 md:w-64 opacity-80 z-20 pointer-events-none">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
-              <div className="absolute top-0 right-0 w-32 md:w-64 opacity-80 z-20 pointer-events-none scale-x-[-1]">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
-              <div className="absolute bottom-0 left-0 w-32 md:w-64 opacity-80 z-20 pointer-events-none scale-y-[-1]">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
-              <div className="absolute bottom-0 right-0 w-32 md:w-64 opacity-80 z-20 pointer-events-none scale-x-[-1] scale-y-[-1]">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
-
+            <section className="relative pt-12 md:pt-20 pb-24 md:pb-32 w-full flex flex-col items-center bg-[#34d399]/10 overflow-hidden">
               <div className="absolute inset-0 opacity-[0.06] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
-              <div className="absolute inset-4 md:inset-8 border-[1.5px] border-[#87937a]/30 pointer-events-none z-10" />
+              <div className="absolute inset-4 md:inset-8 border-[1.5px] border-[#047857]/30 pointer-events-none z-10" />
               <div className="absolute inset-5 md:inset-10 border-[0.5px] border-[#c1b199]/20 pointer-events-none z-10" />
 
               <div className="max-w-[1100px] w-full flex flex-col items-center text-center relative z-20 px-6">
@@ -766,13 +696,13 @@ export default function WeddingInvitation() {
                   <div className="mb-6 w-32 md:w-48 opacity-90 select-none">
                     <img src="/monogram_aa.png" alt="AA" className="w-full h-auto mix-blend-multiply" />
                   </div>
-                  <p className="text-[#87937a] text-[10px] md:text-[12px] tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold text-center leading-loose max-w-2xl">
+                  <p className="text-[#047857] text-[10px] md:text-[12px] tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold text-center leading-loose max-w-2xl">
                     TOGETHER WITH THEIR FAMILIES
                     <br />
                     we joyfully invite you to
                     <br />
                     CELEBRATE THE WEDDING OF
-                    <span className="text-[#c5a059] font-playball text-2xl md:text-3xl block my-2 lowercase first-letter:uppercase">
+                    <span className="text-[#059669] font-playball text-2xl md:text-3xl block my-2 lowercase first-letter:uppercase">
                       {guestName || "Mr. & Mrs./Miss/Family"}
                     </span>
                     <br className="hidden md:block" />
@@ -784,14 +714,14 @@ export default function WeddingInvitation() {
                     initial={{ opacity: 0, x: -40, rotate: -3 }}
                     whileInView={{ opacity: 1, x: 0, rotate: -3 }}
                     viewport={{ once: true }}
-                    className="relative z-10 w-[280px] h-[340px] md:w-[350px] md:h-[450px] bg-white p-4 shadow-[0_20px_50px_rgba(135,147,122,0.15)] border border-[#ccbaa2]/40 rotate-[-3deg] md:-mr-16"
+                    className="relative z-10 w-[280px] h-[340px] md:w-[350px] md:h-[450px] bg-white p-4 shadow-[0_20px_50px_rgba(6,78,59,0.15)] border border-[#34d399]/40 rotate-[-3deg] md:-mr-16 card-marble"
                   >
-                    <div className="w-full h-full overflow-hidden border border-[#ccbaa2]/20">
+                    <div className="w-full h-full overflow-hidden border border-[#34d399]/20 gold-foil-edge">
                       <img
                         src={brideGroomImage}
                         alt="Wedding"
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110 grayscale-[0.2] contrast-110"
                       />
                     </div>
                   </motion.div>
@@ -800,38 +730,39 @@ export default function WeddingInvitation() {
                     initial={{ opacity: 0, x: 40, y: 40 }}
                     whileInView={{ opacity: 1, x: 0, y: 20 }}
                     viewport={{ once: true }}
-                    className="relative z-20 w-full max-w-[450px] bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(135,147,122,0.2)] border border-[#ccbaa2]/50 flex flex-col items-center justify-center text-center"
+                    className="relative z-20 w-full max-w-[450px] bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(6,78,59,0.2)] border border-[#34d399]/50 flex flex-col items-center justify-center text-center card-marble"
                   >
-                    <div className="absolute inset-2 border-[0.5px] border-[#c5a059]/30 pointer-events-none" />
+                    <div className="absolute inset-0 gold-foil-edge opacity-20 pointer-events-none" />
+                    <div className="absolute inset-2 border-[0.5px] border-[#059669]/30 pointer-events-none" />
 
-                    <div className="space-y-2 mb-8">
-                      <p className="text-[8px] uppercase tracking-[0.4em] font-bold text-[#87937a]/60">
+                    <div className="space-y-2 mb-8 relative z-10">
+                      <p className="text-[8px] uppercase tracking-[0.4em] font-bold text-[#047857]/60">
                         Loving daughter of
                       </p>
-                      <p className="text-[11px] font-cinzel text-[#87937a] tracking-wider">
+                      <p className="text-[11px] font-serif text-[#047857] tracking-wider uppercase font-bold">
                         THE FAMILY OF
                         <br />& THE LATE PARENTS
                       </p>
-                      <h3 className="text-4xl md:text-6xl font-playball text-[#c5a059] pt-4 leading-none">
+                      <h3 className="text-5xl md:text-7xl font-script text-[#059669] pt-4 leading-none">
                         Ama
                       </h3>
                     </div>
 
-                    <div className="py-6 flex items-center justify-center w-full">
-                      <div className="h-px w-full bg-[#ccbaa2]/30" />
-                      <span className="px-6 font-playball text-4xl text-[#c5a059] italic">&</span>
-                      <div className="h-px w-full bg-[#ccbaa2]/30" />
+                    <div className="py-6 flex items-center justify-center w-full relative z-10">
+                      <div className="h-px w-full bg-[#34d399]/30" />
+                      <span className="px-6 font-playball text-4xl text-[#059669] italic">&</span>
+                      <div className="h-px w-full bg-[#34d399]/30" />
                     </div>
 
-                    <div className="space-y-2 mt-8">
-                      <p className="text-[8px] uppercase tracking-[0.4em] font-bold text-[#87937a]/60">
+                    <div className="space-y-2 mt-8 relative z-10">
+                      <p className="text-[8px] uppercase tracking-[0.4em] font-bold text-[#047857]/60">
                         Loving son of
                       </p>
-                      <p className="text-[11px] font-cinzel text-[#87937a] tracking-wider">
+                      <p className="text-[11px] font-serif text-[#047857] tracking-wider uppercase font-bold">
                         THE FAMILY OF
                         <br />& THE LATE PARENTS
                       </p>
-                      <h3 className="text-4xl md:text-6xl font-playball text-[#c5a059] pt-4 leading-none">
+                      <h3 className="text-5xl md:text-7xl font-script text-[#059669] pt-4 leading-none">
                         Anjana
                       </h3>
                     </div>
@@ -840,50 +771,40 @@ export default function WeddingInvitation() {
               </div>
             </section>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5 }}
-              className="w-full overflow-hidden leading-[0]"
-            >
-              <img
-                src="/detail_rings.png"
-                alt="Wedding Ring Details"
-                loading="lazy"
-                className="w-full h-auto block"
-              />
-            </motion.div>
 
-            <section className="relative py-24 md:py-36 bg-[#87937a]/5 flex flex-col items-center overflow-hidden">
-              <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ccbaa2] blur-[120px] rounded-full opacity-20" />
+
+            <section className="relative py-24 md:py-32 bg-white flex flex-col items-center overflow-hidden border-t-[0.5px] border-[#d4af37]/30 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-20">
+              <div className="absolute inset-0 opacity-[0.6] bg-[url('https://www.transparenttextures.com/patterns/white-marble.png')] pointer-events-none" />
+              
+              {/* Very fine golden corner brackets for elegance */}
+              <div className="absolute top-12 left-12 w-8 h-8 border-t-[0.5px] border-l-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
+              <div className="absolute top-12 right-12 w-8 h-8 border-t-[0.5px] border-r-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
+              <div className="absolute bottom-12 left-12 w-8 h-8 border-b-[0.5px] border-l-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
+              <div className="absolute bottom-12 right-12 w-8 h-8 border-b-[0.5px] border-r-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
 
               <div className="w-full max-w-[1000px] px-6 flex flex-col items-center text-center relative z-10">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="relative mb-16"
+                  transition={{ duration: 1 }}
+                  className="relative mb-12 flex flex-col items-center"
                 >
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-playball text-[15vw] md:text-[180px] text-[#87937a]/5 whitespace-nowrap pointer-events-none select-none">
-                    Eternity
-                  </div>
-                  <h2 className="font-cinzel text-3xl md:text-5xl text-[#c5a059] tracking-[0.2em] md:tracking-[0.3em] font-bold relative z-10 uppercase">
-                    SAVE <span className="mx-4 text-[#87937a]">THE</span> DATE
+                  <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.6em] text-[#d4af37] font-semibold uppercase mb-4">
+                    The Countdown
+                  </p>
+                  <h2 className="font-serif text-5xl md:text-6xl text-slate-800 tracking-wider font-light italic">
+                    Save the Date
                   </h2>
-                  <div className="mt-8 flex items-center justify-center gap-4">
-                    <div className="h-[0.5px] w-12 bg-[#ccbaa2]" />
-                    <span className="font-playball text-4xl text-[#87937a]">Wait for the magic</span>
-                    <div className="h-[0.5px] w-12 bg-[#ccbaa2]" />
+                  <div className="mt-8 flex items-center justify-center gap-6">
+                    <div className="h-[0.5px] w-12 md:w-20 bg-[#d4af37]/50" />
+                    <span className="font-montserrat text-[9px] md:text-[11px] tracking-[0.4em] uppercase text-slate-500 font-medium">May 09, 2026</span>
+                    <div className="h-[0.5px] w-12 md:w-20 bg-[#d4af37]/50" />
                   </div>
                 </motion.div>
 
                 <CountdownTimer />
 
-                <p className="mt-16 text-[9px] uppercase tracking-[0.6em] text-[#87937a] font-bold opacity-60">
-                  Counting down to our special day
-                </p>
               </div>
             </section>
 
@@ -900,27 +821,27 @@ export default function WeddingInvitation() {
                   >
                     <div className="space-y-4">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-[1px] bg-[#87937a]" />
-                        <span className="text-[#87937a] font-bold uppercase tracking-[0.4em] text-[10px]">
+                        <div className="w-12 h-[1px] bg-[#047857]" />
+                        <span className="text-[#047857] font-bold uppercase tracking-[0.4em] text-[10px]">
                           T H E · V E N U E
                         </span>
                       </div>
-                      <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#c5a059] leading-tight tracking-widest font-bold uppercase">
+                      <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#059669] leading-tight tracking-widest font-bold uppercase">
                         Kithul Kanda
                       </h2>
-                      <p className="font-playball text-3xl md:text-5xl text-[#87937a] italic mt-2">
+                      <p className="font-playball text-3xl md:text-5xl text-[#047857] italic mt-2">
                         MOUNTAIN RESORT
                       </p>
                     </div>
 
-                    <div className="space-y-8 pl-6 border-l border-[#ccbaa2]/40">
+                    <div className="space-y-8 pl-6 border-l border-[#34d399]/40">
                       <div className="flex items-start gap-4">
-                        <MapPin className="w-5 h-5 text-[#87937a] mt-1 shrink-0" />
-                        <p className="text-lg md:text-xl text-[#87937a] font-cinzel leading-relaxed tracking-wide">
+                        <MapPin className="w-5 h-5 text-[#047857] mt-1 shrink-0" />
+                        <p className="text-lg md:text-xl text-[#047857] font-cinzel leading-relaxed tracking-wide">
                           Kithul Kanda Mountain Resort, Padukka.
                         </p>
                       </div>
-                      <p className="text-[#87937a]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
+                      <p className="text-[#047857]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
                         We look forward to welcoming you to this beautiful resort to celebrate our
                         special day. Reception to follow LOVE LAUGHTER FOREVER.
                       </p>
@@ -931,7 +852,7 @@ export default function WeddingInvitation() {
                         onClick={() =>
                           window.open("https://maps.app.goo.gl/Fw6MGDC4ifQxHhRLA", "_blank")
                         }
-                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#87937a] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#7a866d]"
+                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#047857] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#065f46]"
                       >
                         <MapPin className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
                         Get Directions
@@ -939,7 +860,7 @@ export default function WeddingInvitation() {
 
                       <button
                         onClick={() => setIsAccommodationOpen(true)}
-                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#87937a] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] border-2 border-[#87937a] overflow-hidden transition-all hover:bg-[#87937a]/5"
+                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#047857] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] border-2 border-[#047857] overflow-hidden transition-all hover:bg-[#047857]/5"
                       >
                         <Hotel className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
                         Room Rates
@@ -951,9 +872,9 @@ export default function WeddingInvitation() {
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="relative w-full aspect-[3/4] max-w-[450px] mx-auto bg-white p-3 shadow-[0_40px_80px_-20px_rgba(135,147,122,0.2)] border border-[#ccbaa2]/50"
+                    className="relative w-full aspect-[3/4] max-w-[450px] mx-auto bg-white p-3 shadow-[0_40px_80px_-20px_rgba(135,147,122,0.2)] border border-[#34d399]/50"
                   >
-                    <div className="absolute inset-2 border-[0.5px] border-[#c5a059]/30 pointer-events-none z-20" />
+                    <div className="absolute inset-2 border-[0.5px] border-[#059669]/30 pointer-events-none z-20" />
                     <div className="w-full h-full overflow-hidden bg-white relative">
                       <iframe
                         src="https://maps.google.com/maps?q=Kithul%20Kanda%20Mountain%20Resort,%20Padukka&t=&z=16&ie=UTF8&iwloc=&output=embed"
@@ -972,12 +893,6 @@ export default function WeddingInvitation() {
             </section>
 
             <section className="relative py-32 md:py-48 bg-[#f8f6f2] flex flex-col items-center overflow-hidden">
-              <div className="absolute top-0 left-0 w-32 md:w-48 opacity-40 pointer-events-none">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
-              <div className="absolute bottom-0 right-0 w-32 md:w-48 opacity-40 pointer-events-none scale-x-[-1] scale-y-[-1]">
-                <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-              </div>
               <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
 
               <div className="container mx-auto px-4 max-w-4xl flex flex-col items-center relative z-10 w-full">
@@ -1028,17 +943,18 @@ export default function WeddingInvitation() {
                     />
                   </motion.div>
 
-                  <motion.div
-                    initial={{ y: 150, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                    viewport={{ once: true }}
-                    className="relative z-10 w-[94%] md:w-[88%] bg-white shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col items-center pt-8 md:pt-12"
-                  >
-                    <div className="w-full border border-slate-300 rounded-[1.5rem] p-6 md:p-8 flex flex-col items-center mt-2 relative z-10">
-                      <h3 className="font-playball text-2xl md:text-4xl text-slate-800 mb-8 text-center">
-                        RSVP Confirmation
-                      </h3>
+                    <motion.div
+                      initial={{ y: 150, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                      viewport={{ once: true }}
+                      className="relative z-10 w-[94%] md:w-[88%] bg-white shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col items-center pt-8 md:pt-12 card-marble"
+                    >
+                      <div className="absolute inset-0 gold-foil-edge opacity-20 pointer-events-none" />
+                      <div className="w-full border border-slate-300 rounded-[1.5rem] p-6 md:p-8 flex flex-col items-center mt-2 relative z-10">
+                        <h3 className="font-script text-4xl md:text-6xl text-[#047857] mb-8 text-center">
+                          RSVP Confirmation
+                        </h3>
 
                       <form className="w-full space-y-6 text-left" onSubmit={handleRsvpSubmit}>
                         <div className="space-y-2">
@@ -1165,16 +1081,10 @@ export default function WeddingInvitation() {
               </div>
             </section>
 
-            <div className="relative bg-[#ccbaa2]/10">
+            <div className="relative bg-[#34d399]/10">
               <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
 
               <section className="relative py-24 md:py-36 flex flex-col items-center overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 md:w-64 opacity-50 pointer-events-none scale-x-[-1]">
-                  <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-                </div>
-                <div className="absolute bottom-0 left-0 w-32 md:w-64 opacity-50 pointer-events-none scale-y-[-1]">
-                  <img src="/floral_corner_theme.png" alt="" className="w-full h-auto" />
-                </div>
                 <div className="container mx-auto px-4 max-w-4xl text-center relative z-10 w-full">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -1182,26 +1092,27 @@ export default function WeddingInvitation() {
                     viewport={{ once: true }}
                     className="flex flex-col items-center"
                   >
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#87937a]/10 mb-8 mt-4 shadow-sm border border-[#87937a]/20">
-                      <Sparkles className="w-8 h-8 text-[#87937a]" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#047857]/10 mb-8 mt-4 shadow-sm border border-[#047857]/20">
+                      <Sparkles className="w-8 h-8 text-[#047857]" />
                     </div>
 
-                    <h2 className="font-playball text-[3.5rem] sm:text-[4rem] md:text-[5.5rem] text-[#c5a059] mb-6 drop-shadow-sm leading-none">
+                    <h2 className="font-script text-[4.5rem] sm:text-[5rem] md:text-[7rem] text-[#059669] mb-6 drop-shadow-sm leading-none">
                       Best Wishes
                     </h2>
-                    <div className="h-px w-24 bg-[#ccbaa2] mb-8" />
+                    <div className="h-px w-24 bg-[#34d399] mb-8" />
 
-                    <p className="text-[#87937a] text-sm md:text-lg leading-relaxed max-w-xl mx-auto mb-16 font-light tracking-[0.1em] px-4 uppercase">
+                    <p className="text-[#047857] text-sm md:text-lg leading-relaxed max-w-xl mx-auto mb-16 font-serif tracking-[0.1em] px-4 uppercase font-bold">
                       Your presence at our wedding is the greatest gift of all. However, if you
                       wish to honor us with a message, we would be delighted to read it!
                     </p>
 
-                    <div className="w-full max-w-2xl mx-auto bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(135,147,122,0.1)] border border-[#ccbaa2]/50 relative group">
-                      <div className="absolute inset-2 border-[0.5px] border-[#c5a059]/20 pointer-events-none transition-colors duration-700" />
+                    <div className="w-full max-w-2xl mx-auto bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(6,78,59,0.1)] border border-[#34d399]/50 relative group card-marble">
+                      <div className="absolute inset-0 gold-foil-edge opacity-20 pointer-events-none" />
+                      <div className="absolute inset-2 border-[0.5px] border-[#059669]/20 pointer-events-none transition-colors duration-700" />
 
                       <form className="space-y-12 text-left relative z-10" onSubmit={handleWishSubmit}>
                         <div className="space-y-4">
-                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#87937a]/40">
+                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#047857]/40">
                             From
                           </label>
                           <input
@@ -1212,12 +1123,12 @@ export default function WeddingInvitation() {
                               setWishStatus("idle");
                               setWishForm((prev) => ({ ...prev, name: e.target.value }));
                             }}
-                            className="w-full bg-transparent border-b border-[#ccbaa2]/40 px-0 py-4 text-[#87937a] placeholder:text-[#ccbaa2]/30 focus:outline-none focus:border-[#c5a059] transition-all font-cinzel text-lg tracking-widest"
+                            className="w-full bg-transparent border-b border-[#34d399]/40 px-0 py-4 text-[#047857] placeholder:text-[#34d399]/30 focus:outline-none focus:border-[#059669] transition-all font-cinzel text-lg tracking-widest"
                             required
                           />
                         </div>
                         <div className="space-y-4">
-                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#87937a]/40">
+                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#047857]/40">
                             Message
                           </label>
                           <textarea
@@ -1228,7 +1139,7 @@ export default function WeddingInvitation() {
                               setWishStatus("idle");
                               setWishForm((prev) => ({ ...prev, message: e.target.value }));
                             }}
-                            className="w-full bg-transparent border-b border-[#ccbaa2]/40 px-0 py-4 text-[#87937a] placeholder:text-[#ccbaa2]/30 focus:outline-none focus:border-[#c5a059] transition-all font-cinzel text-lg tracking-widest resize-none"
+                            className="w-full bg-transparent border-b border-[#34d399]/40 px-0 py-4 text-[#047857] placeholder:text-[#34d399]/30 focus:outline-none focus:border-[#059669] transition-all font-cinzel text-lg tracking-widest resize-none"
                             required
                           />
                         </div>
@@ -1246,7 +1157,7 @@ export default function WeddingInvitation() {
                           <button
                             type="submit"
                             disabled={wishStatus === "sending"}
-                            className="bg-[#87937a] text-white px-12 py-5 font-bold uppercase tracking-[0.4em] text-[10px] hover:bg-[#7a866d] transition-all duration-300 shadow-md disabled:opacity-70"
+                            className="bg-[#047857] text-white px-12 py-5 font-bold uppercase tracking-[0.4em] text-[10px] hover:bg-[#065f46] transition-all duration-300 shadow-md disabled:opacity-70"
                           >
                             {wishStatus === "sending" ? "Sending..." : "Send Wishes"}
                           </button>
@@ -1258,7 +1169,7 @@ export default function WeddingInvitation() {
               </section>
 
               <footer className="py-24 md:py-40 flex flex-col items-center text-center relative z-10 px-6">
-                <div className="h-px w-24 bg-[#ccbaa2] mb-16 opacity-50" />
+                <div className="h-px w-24 bg-[#34d399] mb-16 opacity-50" />
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -1266,16 +1177,16 @@ export default function WeddingInvitation() {
                   viewport={{ once: true }}
                   className="space-y-6"
                 >
-                  <p className="font-playball text-5xl md:text-7xl text-[#c5a059] leading-tight">
+                  <p className="font-script text-6xl md:text-8xl text-[#059669] leading-tight">
                     With Love,
                   </p>
-                  <h2 className="font-cinzel text-2xl md:text-4xl text-[#87937a] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold">
+                  <h2 className="font-cinzel text-2xl md:text-4xl text-[#047857] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold">
                     AMA <span className="mx-2 md:mx-4 opacity-40 font-light">&</span> ANJANA
                   </h2>
                 </motion.div>
 
-                <div className="mt-24 md:mt-36 pt-12 border-t border-[#ccbaa2]/20 w-full max-w-sm">
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-[0.6em] text-[#87937a]/50 font-bold leading-loose">
+                <div className="mt-24 md:mt-36 pt-12 border-t border-[#34d399]/20 w-full max-w-sm">
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-[0.6em] text-[#047857]/50 font-bold leading-loose">
                     © 2026 Ama & Anjana
                     <br className="md:hidden" />
                     <span className="hidden md:inline mx-4">|</span>
@@ -1306,7 +1217,7 @@ export default function WeddingInvitation() {
         onClick={() => handleSoundToggle()}
         aria-pressed={musicAudible}
         aria-label={musicAudible ? "Mute background music" : "Unmute background music"}
-        className="fixed bottom-6 left-6 z-[120] flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#c5a059] bg-white/95 text-[#87937a] shadow-[0_0_0_4px_rgba(197,160,89,0.2),0_10px_36px_-6px_rgba(135,147,122,0.45)] backdrop-blur-md touch-manipulation transition-[transform,box-shadow] hover:scale-[1.05] hover:shadow-[0_0_0_5px_rgba(197,160,89,0.28),0_14px_44px_-6px_rgba(135,147,122,0.5)] active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdfaf5]"
+        className="fixed bottom-6 left-6 z-[120] flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#059669] bg-white/95 text-[#047857] shadow-[0_0_0_4px_rgba(197,160,89,0.2),0_10px_36px_-6px_rgba(135,147,122,0.45)] backdrop-blur-md touch-manipulation transition-[transform,box-shadow] hover:scale-[1.05] hover:shadow-[0_0_0_5px_rgba(197,160,89,0.28),0_14px_44px_-6px_rgba(135,147,122,0.5)] active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#059669] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdfaf5]"
       >
         {musicAudible ? <Volume2 className="h-6 w-6" strokeWidth={2} /> : <VolumeX className="h-6 w-6" strokeWidth={2} />}
       </motion.button>
@@ -1325,10 +1236,10 @@ export default function WeddingInvitation() {
           width: 8px;
         }
         ::-webkit-scrollbar-track {
-          background: #ccbaa233;
+          background: #34d39933;
         }
         ::-webkit-scrollbar-thumb {
-          background: #87937a66;
+          background: #04785766;
           border-radius: 10px;
         }
       `,
@@ -1440,7 +1351,7 @@ function AdminPanel() {
 
         <button
           onClick={generateLink}
-          className="w-full bg-[#87937a] text-white py-3 rounded-xl font-bold text-[10px] tracking-widest uppercase hover:bg-[#7a866d] transition-all"
+          className="w-full bg-[#047857] text-white py-3 rounded-xl font-bold text-[10px] tracking-widest uppercase hover:bg-[#065f46] transition-all"
         >
           Generate Personalized Link
         </button>
