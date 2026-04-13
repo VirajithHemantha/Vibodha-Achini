@@ -9,7 +9,7 @@
  * - wish
  */
 
-const SPREADSHEET_ID = "1DWeuLq0XoCdg0PFXg_uoCuHjW_WVnyam6z0V-zTWn9g";
+const SPREADSHEET_ID = "1DdkP3nwt1Pxm-rFM8BGOLsQVxaQkcGfCMA0Di8IYNuA";
 const RSVP_SHEET_NAME = "rsvp";
 const WISH_SHEET_NAME = "wish";
 
