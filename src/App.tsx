@@ -451,23 +451,6 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
               </div>
             </div>
 
-            <div className="bg-[#045e54]/5 p-8 rounded-2xl border border-[#045e54]/10">
-              <h3 className="font-cinzel text-sm font-bold text-[#045e54] mb-6 uppercase tracking-widest text-center">Honeymoon Package Includes</h3>
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                {[
-                  { icon: "🍾🍷", label: "Bottle of Wine" },
-                  { icon: "🛌✨", label: "Bed decoration" },
-                  { icon: "🕯️🍽️", label: "Candlelight Dinner" },
-                  { icon: "👩‍❤️‍👨📸", label: "Photo Location" },
-                  { icon: "🍪🍪", label: "Cookies Plate" },
-                ].map((item) => (
-                  <div key={item.label} className="flex flex-col items-center gap-2 text-center p-3">
-                    <span className="text-2xl">{item.icon}</span>
-                    <span className="text-[10px] font-bold text-[#045e54] uppercase tracking-tighter leading-tight">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
 
             <div>
               <div className="flex items-center gap-4 mb-8">
