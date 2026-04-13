@@ -112,7 +112,7 @@ body {
 }
 
 .bg-marble-emerald {
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, rgba(6, 95, 70, 0.6) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(4, 120, 87, 0.5) 0%, transparent 40%),
     linear-gradient(135deg, #022c22 0%, #064e3b 50%, #022c22 100%);
@@ -124,7 +124,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     url("https://www.transparenttextures.com/patterns/black-scales.png"),
     url("https://www.transparenttextures.com/patterns/natural-paper.png");
   opacity: 0.15;
@@ -143,41 +143,38 @@ body {
   bottom: -5%;
   width: 40px;
   right: -20px;
-  background: 
+  background:
     url("https://www.transparenttextures.com/patterns/stardust.png"),
-    linear-gradient(180deg, 
-    #b8860b 0%,
-    #f7e7ce 10%,
-    #d4af37 20%,
-    #996515 30%,
-    #f7e7ce 40%,
-    #b8860b 50%,
-    #d4af37 60%,
-    #f7e7ce 70%,
-    #996515 80%,
-    #d4af37 90%,
-    #b8860b 100%
-  );
-  filter: drop-shadow(4px 0px 8px rgba(0,0,0,0.5));
-  clip-path: polygon(
-    0% 0%, 50% 0%, 
-    60% 2%, 40% 4%, 80% 7%, 45% 9%, 65% 12%, 35% 15%, 75% 18%, 40% 21%, 
-    85% 24%, 45% 27%, 60% 30%, 35% 33%, 70% 36%, 40% 39%, 80% 42%, 45% 45%, 
-    65% 48%, 35% 51%, 75% 54%, 40% 57%, 85% 60%, 45% 63%, 60% 66%, 35% 69%, 
-    70% 72%, 40% 75%, 80% 78%, 45% 81%, 65% 84%, 35% 87%, 75% 90%, 40% 93%, 
-    85% 96%, 45% 98%, 50% 100%, 0% 100%
-  );
+    linear-gradient(180deg,
+      #b8860b 0%,
+      #f7e7ce 10%,
+      #d4af37 20%,
+      #996515 30%,
+      #f7e7ce 40%,
+      #b8860b 50%,
+      #d4af37 60%,
+      #f7e7ce 70%,
+      #996515 80%,
+      #d4af37 90%,
+      #b8860b 100%);
+  filter: drop-shadow(4px 0px 8px rgba(0, 0, 0, 0.5));
+  clip-path: polygon(0% 0%, 50% 0%,
+      60% 2%, 40% 4%, 80% 7%, 45% 9%, 65% 12%, 35% 15%, 75% 18%, 40% 21%,
+      85% 24%, 45% 27%, 60% 30%, 35% 33%, 70% 36%, 40% 39%, 80% 42%, 45% 45%,
+      65% 48%, 35% 51%, 75% 54%, 40% 57%, 85% 60%, 45% 63%, 60% 66%, 35% 69%,
+      70% 72%, 40% 75%, 80% 78%, 45% 81%, 65% 84%, 35% 87%, 75% 90%, 40% 93%,
+      85% 96%, 45% 98%, 50% 100%, 0% 100%);
   z-index: 30;
 }
 
 .text-gold-gradient {
   background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
-                radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+    radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
 }
 
 .card-marble {
