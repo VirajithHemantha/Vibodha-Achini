@@ -1168,30 +1168,54 @@ export default function WeddingInvitation() {
                 </div>
               </section>
 
-              <footer className="py-24 md:py-40 flex flex-col items-center text-center relative z-10 px-6">
-                <div className="h-px w-24 bg-[#34d399] mb-16 opacity-50" />
+              <footer className="relative py-24 md:py-32 bg-marble-emerald w-full flex flex-col items-center overflow-hidden z-20">
+                {/* Subtle vignette over the deep green */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-0"></div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="space-y-6"
-                >
-                  <p className="font-script text-6xl md:text-8xl text-[#059669] leading-tight">
-                    With Love,
-                  </p>
-                  <h2 className="font-cinzel text-2xl md:text-4xl text-[#047857] tracking-[0.4em] md:tracking-[0.6em] uppercase font-bold">
-                    AMA <span className="mx-2 md:mx-4 opacity-40 font-light">&</span> ANJANA
-                  </h2>
-                </motion.div>
+                {/* Elegant border details */}
+                <div className="absolute top-0 left-0 w-full h-[0.5px] bg-gradient-to-r from-transparent via-[#d4af37]/50 to-transparent"></div>
+                <div className="absolute inset-4 md:inset-6 border-[0.5px] border-[#d4af37]/20 pointer-events-none z-10 hidden md:block rounded-sm shadow-[inset_0_0_15px_rgba(212,175,55,0.05)]"></div>
 
-                <div className="mt-24 md:mt-36 pt-12 border-t border-[#34d399]/20 w-full max-w-sm">
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-[0.6em] text-[#047857]/50 font-bold leading-loose">
-                    © 2026 Ama & Anjana
-                    <br className="md:hidden" />
-                    <span className="hidden md:inline mx-4">|</span>
-                    All rights reserved.
-                  </p>
+                <div className="w-full max-w-4xl px-6 flex flex-col items-center text-center relative z-20">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2 }}
+                    className="flex flex-col items-center"
+                  >
+                    <div className="mb-8 w-20 md:w-28 opacity-80 select-none">
+                      <img src="/monogram_aa.png" alt="AA" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                    </div>
+
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
+                      <div className="w-1.5 h-1.5 rotate-45 border-[0.5px] border-[#d4af37]/60" />
+                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
+                    </div>
+
+                    <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.5em] text-[#f7e7ce]/70 uppercase font-medium mb-4">
+                      With heartfelt gratitude
+                    </p>
+                    
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 mt-4">
+                      <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
+                        Ama
+                      </h2>
+                      <span className="font-serif text-3xl md:text-5xl text-[#d4af37] italic opacity-80 drop-shadow-md pb-2">&</span>
+                      <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
+                        Anjana
+                      </h2>
+                    </div>
+                  </motion.div>
+
+                  <div className="mt-20 pt-8 border-t-[0.5px] border-[#d4af37]/30 w-full max-w-xs md:max-w-md flex flex-col items-center gap-4">
+                    <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-[#f7e7ce]/50 font-bold leading-relaxed flex flex-col md:flex-row items-center gap-2 md:gap-4">
+                      <span>© 2026 Ama & Anjana</span>
+                      <span className="hidden md:inline text-[#d4af37]/30">|</span>
+                      <span>All Rights Reserved</span>
+                    </p>
+                  </div>
                 </div>
               </footer>
             </div>
