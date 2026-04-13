@@ -1279,10 +1279,20 @@ export default function WeddingInvitation() {
 
                   <div className="mt-20 pt-8 border-t-[0.5px] border-[#d4af37]/30 w-full max-w-xs md:max-w-md flex flex-col items-center gap-4">
                     <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-[#f7e7ce]/50 font-bold leading-relaxed flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                      <span>(c) 2026 Ama & Anjana</span>
+                      <span>© 2026 Ama & Anjana</span>
                       <span className="hidden md:inline text-[#d4af37]/30">|</span>
                       <span>All Rights Reserved</span>
                     </p>
+                    <a 
+                      href="https://wa.me/94707819074" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] tracking-[0.3em] text-[#d4af37]/60 hover:text-[#d4af37] transition-all uppercase font-medium flex items-center gap-2"
+                    >
+                      <span>Designed by invitemint</span>
+                      <span className="w-1 h-1 rounded-full bg-[#d4af37]/40" />
+                      <span>Contact us</span>
+                    </a>
                   </div>
                 </div>
               </footer>
