@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface EnvelopeOpenerProps {
@@ -54,7 +52,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
           className="fixed inset-0 z-50 overflow-hidden"
         >
           {/* Background */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(52,211,153,0.12),transparent_35%),linear-gradient(135deg,#064e3b_0%,#065f46_38%,#047857_65%,#022c22_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.08),transparent_35%),linear-gradient(135deg,#023832_0%,#012b26_38%,#011f1a_65%,#001410_100%)]" />
 
           {/* Soft ambient glow */}
           <motion.div
@@ -161,7 +159,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                 }}
               >
                 <div
-                  className="h-5 w-3 rounded-full bg-gradient-to-b from-[#d1fae5] via-[#6ee7b7] to-[#065f46] shadow-[0_0_14px_rgba(209,250,229,0.18)]"
+                  className="h-5 w-3 rounded-full bg-gradient-to-b from-[#b7e4c7] via-[#2d6a4f] to-[#012b26] shadow-[0_0_14px_rgba(183,228,199,0.15)]"
                   style={{
                     transform: `scale(${petal.scale}) rotate(18deg)`,
                     borderRadius: '70% 30% 70% 30% / 70% 30% 70% 30%',
@@ -356,7 +354,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                       repeat: !isOpen ? Infinity : 0,
                       ease: 'easeInOut',
                     }}
-                    className="absolute left-1/2 top-[54%] z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#f2d89c]/40 bg-[radial-gradient(circle_at_30%_30%,#10b981_0%,#059669_55%,#064e3b_100%)] shadow-[0_10px_30px_rgba(6,78,59,0.45)]"
+                    className="absolute left-1/2 top-[54%] z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#f2d89c]/40 bg-[radial-gradient(circle_at_30%_30%,#10b981_0%,#023832_55%,#011f1a_100%)] shadow-[0_10px_30px_rgba(1,31,26,0.45)]"
                   >
                     <span className="font-serif text-lg text-[#f5e6c8]">A ✦ A</span>
                   </motion.div>
@@ -412,7 +410,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
 
                       <div className="mt-4 flex items-center justify-center gap-3">
                         <span className="h-px w-10 bg-[#C9A227]/45" />
-                        <span className="text-[#C9A227]">❋</span>
+                        <span className="text-[#C9A227]">✧</span>
                         <span className="h-px w-10 bg-[#C9A227]/45" />
                       </div>
 

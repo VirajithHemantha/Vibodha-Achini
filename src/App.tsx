@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, ChevronDown, Volume2, VolumeX, X, Hotel, MailOpen } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { Sparkles, MapPin, ChevronDown, Volume2, VolumeX, X, Hotel, MailOpen, Heart, Stars } from "lucide-react";
+import { useInView } from 'react-intersection-observer';
 import EnvelopeOpener from "./components/EnvelopeOpener";
 
 /**
@@ -11,7 +12,7 @@ import EnvelopeOpener from "./components/EnvelopeOpener";
  */
 
 const brideGroomImage = "/images/couple_aa.png";
-const backgroundMusic = "/bg_music.mp3";
+const backgroundMusic = "/ama_anjana_flute.mp3";
 const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
 
 /** iOS / Android block unmuted autoplay; iPadOS may report as MacIntel. */
@@ -109,56 +110,210 @@ function FloatingPetals() {
 }
 
 function CountdownTimer() {
-  const targetDate = new Date("May 09, 2026 17:00:00").getTime();
-  const [timeLeft, setTimeLeft] = useState(targetDate - Date.now());
+  const { ref, inView } = useInView({
+    threshold: 0.15,
+    triggerOnce: true,
+  });
+
+  const targetDate = useMemo(() => new Date("May 09, 2026 17:00:00").getTime(), []);
+
+  const getTimeLeft = (): { days: number; hours: number; minutes: number; seconds: number } => {
+    const now = new Date().getTime();
+    const difference = targetDate - now;
+
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(targetDate - Date.now());
+      setTimeLeft(getTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-  const stats = [
-    { label: "Days", value: days },
-    { label: "Hours", value: hours },
-    { label: "Minutes", value: minutes },
-    { label: "Seconds", value: seconds },
+  const countdownItems = [
+    { label: 'Days', value: timeLeft.days },
+    { label: 'Hours', value: timeLeft.hours },
+    { label: 'Minutes', value: timeLeft.minutes },
+    { label: 'Seconds', value: timeLeft.seconds },
   ];
 
+  const floatingHearts = useMemo(() => Array.from({ length: 12 }).map((_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    size: 8 + Math.random() * 14,
+    delay: Math.random() * 5,
+    duration: 8 + Math.random() * 8,
+  })), []);
+
   return (
-    <div className="flex flex-wrap gap-6 sm:gap-10 md:gap-16 justify-center w-full max-w-4xl mx-auto mt-8 md:mt-16 z-20 px-4">
-      {stats.map((stat, i) => (
+    <section
+      ref={ref}
+      className="relative py-24 md:py-36 bg-marble-emerald flex flex-col items-center overflow-hidden z-20"
+    >
+      {/* Subtle vignette over the deep green */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-0"></div>
+
+      {/* Floating Ornaments */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {floatingHearts.map((heart) => (
+          <motion.div
+            key={heart.id}
+            className="absolute text-[#d4af37]/20"
+            style={{ left: heart.left, top: heart.top }}
+            animate={{
+              y: [0, -90, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              rotate: [0, Math.random() * 360, 0],
+              opacity: [0, 0.45, 0],
+              scale: [0.5, 1.2, 0.5]
+            }}
+            transition={{
+              duration: heart.duration,
+              delay: heart.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <Heart size={heart.size} fill="currentColor" />
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="w-full max-w-6xl px-6 flex flex-col items-center text-center relative z-10">
         <motion.div
-          key={stat.label}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.15, duration: 0.8, ease: "easeOut" }}
-          className="relative group flex flex-col items-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, type: "spring", stiffness: 100 }}
+          className="mx-auto mb-16 max-w-4xl text-center md:mb-20"
         >
-          <div className="relative w-[4.5rem] h-[4.5rem] sm:w-20 sm:h-20 md:w-28 md:h-28 rounded-full border-[0.5px] border-[#d4af37]/40 flex flex-col items-center justify-center overflow-hidden transition-all duration-700 group-hover:scale-105 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] group-hover:border-[#d4af37]/70 bg-black/10 backdrop-blur-sm">
-            {/* Inner elegant ring */}
-            <div className="absolute inset-1.5 md:inset-2 rounded-full border-[0.5px] border-[#d4af37]/20 pointer-events-none transition-all duration-700 group-hover:inset-1 group-hover:border-[#d4af37]/40" />
-
-            <span className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#f7e7ce] leading-none relative z-10 drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)] font-light">
-              {Math.max(0, stat.value).toString().padStart(2, "0")}
+          <motion.div
+            whileHover={{ scale: 1.04 }}
+            className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#d4af37]/45 bg-black/30 px-5 py-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-md"
+          >
+            <Sparkles className="h-4 w-4 text-[#d4af37]" />
+            <span className="text-xs font-bold uppercase tracking-[0.24em] text-[#f7e7ce] sm:text-sm">
+              The Big Day Approaches
             </span>
+            <Sparkles className="h-4 w-4 text-[#d4af37]" />
+          </motion.div>
+
+          <h2 className="font-alex text-6xl md:text-[8rem] leading-tight text-white drop-shadow-lg">
+            Counting Down to <span className="relative inline-block text-gold-gradient">
+              Forever
+              <motion.svg className="absolute -bottom-2 md:-bottom-4 left-0 w-full"
+                viewBox="0 0 100 20" preserveAspectRatio="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={inView ? { pathLength: 1, opacity: 1 } : {}}
+                transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+              >
+                <motion.path
+                  d="M0 10 Q 25 20, 50 10 T 100 10"
+                  fill="none"
+                  stroke="#d4af37"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </motion.svg>
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-10 max-w-2xl text-[#f7e7ce]/80 font-montserrat tracking-widest text-sm uppercase">
+            Every second brings us closer to our blessed wedding day. We cannot wait to celebrate this grace-filled moment with you.
+          </p>
+        </motion.div>
+
+        <div className="w-full rounded-[2rem] border border-[#d4af37]/30 bg-black/20 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-6 md:p-8">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6">
+            {countdownItems.map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.15 + index * 0.1,
+                  type: "spring",
+                  bounce: 0.35
+                }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="group relative"
+              >
+                <div className="relative overflow-hidden rounded-[1.8rem] border border-[#d4af37]/30 bg-[linear-gradient(160deg,rgba(255,255,255,0.05)_0%,rgba(0,0,0,0.3)_100%)] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 group-hover:shadow-[0_20px_45px_rgba(0,0,0,0.4)] md:p-7">
+                  <div className="absolute inset-0 opacity-[0.1]"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(rgba(212,175,55,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.3) 1px, transparent 1px)',
+                      backgroundSize: '24px 24px',
+                    }}
+                  />
+
+                  <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full border border-[#d4af37]/20" />
+                  <div className="absolute -left-6 -bottom-6 h-16 w-16 rounded-full border border-[#d4af37]/10" />
+
+                  <div className="relative z-10 flex flex-col items-center justify-center text-center">
+                    <div className="relative flex h-[64px] w-full items-center justify-center overflow-hidden sm:h-[78px] md:h-[96px]">
+                      <AnimatePresence mode="popLayout">
+                        <motion.span
+                          key={item.value}
+                          initial={{ y: 40, opacity: 0, scale: 0.65 }}
+                          animate={{ y: 0, opacity: 1, scale: 1 }}
+                          exit={{ y: -40, opacity: 0, scale: 0.65 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 370,
+                            damping: 24,
+                            mass: 1
+                          }}
+                          className="absolute font-serif text-5xl font-semibold text-[#f7e7ce] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] sm:text-6xl md:text-7xl"
+                        >
+                          {String(item.value).padStart(2, '0')}
+                        </motion.span>
+                      </AnimatePresence>
+                    </div>
+
+                    <div className="mt-3 rounded-full border border-[#d4af37]/40 bg-black/40 px-3 py-1.5 shadow-sm md:mt-5">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#d4af37] md:text-xs">
+                        {item.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
+        </div>
 
-          <div className="mt-5 text-center relative z-10 transition-transform duration-500 group-hover:-translate-y-1">
-            <span className="text-[8px] sm:text-[9px] md:text-[11px] uppercase tracking-[0.4em] md:tracking-[0.5em] text-[#d4af37] font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-              {stat.label}
+        <motion.div
+          className="mt-14 flex justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, delay: 0.8 }}
+        >
+          <div className="flex items-center gap-3 text-[#d4af37]">
+            <Stars size={14} className="animate-pulse" />
+            <Heart size={15} className="animate-bounce" fill="currentColor" />
+            <span className="font-serif italic text-lg text-[#f7e7ce]/80 sm:text-2xl">
+              Can't wait to see you there!
             </span>
+            <Heart size={15} className="animate-bounce" fill="currentColor" style={{ animationDelay: '200ms' }} />
+            <Stars size={14} className="animate-pulse" />
           </div>
         </motion.div>
-      ))}
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -260,8 +415,8 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       >
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-[#fcfcf0]">
           <div>
-            <h2 className="font-cinzel text-xl md:text-2xl text-[#059669] font-bold">Accommodation Rates</h2>
-            <p className="text-[10px] uppercase tracking-widest text-[#047857] mt-1">Kithul Kanda Mountain Resort</p>
+            <h2 className="font-cinzel text-xl md:text-2xl text-[#045e54] font-bold">Accommodation Rates</h2>
+            <p className="text-[10px] uppercase tracking-widest text-[#045e54] mt-1">Kithul Kanda Mountain Resort</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
             <X size={24} className="text-slate-400" />
@@ -272,14 +427,14 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           <div className="space-y-12">
             <div>
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-px flex-1 bg-[#059669]/30" />
-                <h3 className="font-playball text-3xl text-[#059669]">Honeymoon Room Rates</h3>
-                <div className="h-px flex-1 bg-[#059669]/30" />
+                <div className="h-px flex-1 bg-[#045e54]/30" />
+                <h3 className="font-playball text-3xl text-[#045e54]">Honeymoon Room Rates</h3>
+                <div className="h-px flex-1 bg-[#045e54]/30" />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {honeymoonRates.map((plan) => (
-                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#34d399]/30 shadow-sm">
-                    <h4 className="font-cinzel text-sm font-bold text-[#047857] mb-4 border-b border-[#34d399]/20 pb-2">{plan.plan}</h4>
+                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#48b0a3]/30 shadow-sm">
+                    <h4 className="font-cinzel text-sm font-bold text-[#045e54] mb-4 border-b border-[#48b0a3]/20 pb-2">{plan.plan}</h4>
                     <div className="space-y-3">
                       {plan.rooms.map((room) => (
                         <div key={room.name} className="flex justify-between items-center gap-4">
@@ -287,7 +442,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             <p className="text-xs font-bold text-slate-700">{room.name}</p>
                             <p className="text-[10px] text-slate-400">{room.view}</p>
                           </div>
-                          <p className="text-xs font-bold text-[#059669] whitespace-nowrap">{room.rate}</p>
+                          <p className="text-xs font-bold text-[#045e54] whitespace-nowrap">{room.rate}</p>
                         </div>
                       ))}
                     </div>
@@ -296,19 +451,19 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
               </div>
             </div>
 
-            <div className="bg-[#047857]/5 p-8 rounded-2xl border border-[#047857]/10">
-              <h3 className="font-cinzel text-sm font-bold text-[#047857] mb-6 uppercase tracking-widest text-center">Honeymoon Package Includes</h3>
+            <div className="bg-[#045e54]/5 p-8 rounded-2xl border border-[#045e54]/10">
+              <h3 className="font-cinzel text-sm font-bold text-[#045e54] mb-6 uppercase tracking-widest text-center">Honeymoon Package Includes</h3>
               <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
-                  { icon: "🍾🍷", label: "Bottle of Wine" },
-                  { icon: "🛌🏻🎊", label: "Bed decoration" },
-                  { icon: "🕯️🍽️", label: "Candlelight Dinner" },
-                  { icon: "👩❤️👨🏞️", label: "Photo Location" },
-                  { icon: "🍪🧇", label: "Cookies Plate" },
+                  { icon: "ðŸ¾ðŸ·", label: "Bottle of Wine" },
+                  { icon: "ðŸ›ŒðŸ»ðŸŽŠ", label: "Bed decoration" },
+                  { icon: "ðŸ•¯ï¸ðŸ½ï¸", label: "Candlelight Dinner" },
+                  { icon: "ðŸ‘©â¤ï¸ðŸ‘¨ðŸžï¸", label: "Photo Location" },
+                  { icon: "ðŸªðŸ§‡", label: "Cookies Plate" },
                 ].map((item) => (
                   <div key={item.label} className="flex flex-col items-center gap-2 text-center p-3">
                     <span className="text-2xl">{item.icon}</span>
-                    <span className="text-[10px] font-bold text-[#047857] uppercase tracking-tighter leading-tight">{item.label}</span>
+                    <span className="text-[10px] font-bold text-[#045e54] uppercase tracking-tighter leading-tight">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -316,14 +471,14 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
             <div>
               <div className="flex items-center gap-4 mb-8">
-                <div className="h-px flex-1 bg-[#059669]/30" />
-                <h3 className="font-playball text-3xl text-[#059669]">Double Room Rates</h3>
-                <div className="h-px flex-1 bg-[#059669]/30" />
+                <div className="h-px flex-1 bg-[#045e54]/30" />
+                <h3 className="font-playball text-3xl text-[#045e54]">Double Room Rates</h3>
+                <div className="h-px flex-1 bg-[#045e54]/30" />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {doubleRates.map((plan) => (
-                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#34d399]/30 shadow-sm">
-                    <h4 className="font-cinzel text-sm font-bold text-[#047857] mb-4 border-b border-[#34d399]/20 pb-2">{plan.plan}</h4>
+                  <div key={plan.plan} className="bg-white p-6 rounded-xl border border-[#48b0a3]/30 shadow-sm">
+                    <h4 className="font-cinzel text-sm font-bold text-[#045e54] mb-4 border-b border-[#48b0a3]/20 pb-2">{plan.plan}</h4>
                     <div className="space-y-3">
                       {plan.rooms.map((room) => (
                         <div key={room.name} className="flex justify-between items-center gap-4">
@@ -331,7 +486,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             <p className="text-xs font-bold text-slate-700">{room.name}</p>
                             <p className="text-[10px] text-slate-400">{room.view}</p>
                           </div>
-                          <p className="text-xs font-bold text-[#059669] whitespace-nowrap">{room.rate}</p>
+                          <p className="text-xs font-bold text-[#045e54] whitespace-nowrap">{room.rate}</p>
                         </div>
                       ))}
                     </div>
@@ -343,15 +498,15 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Check In</p>
-                <p className="font-cinzel text-xl text-[#047857]">2:00 PM</p>
+                <p className="font-cinzel text-xl text-[#045e54]">2:00 PM</p>
               </div>
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Check Out</p>
-                <p className="font-cinzel text-xl text-[#047857]">12:00 PM</p>
+                <p className="font-cinzel text-xl text-[#045e54]">12:00 PM</p>
               </div>
               <div className="text-center">
                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Availability</p>
-                <p className="font-cinzel text-sm text-[#047857] leading-tight">Max 16 Rooms Available</p>
+                <p className="font-cinzel text-sm text-[#045e54] leading-tight">Max 16 Rooms Available</p>
               </div>
             </div>
           </div>
@@ -410,10 +565,11 @@ export default function WeddingInvitation() {
       audio.volume = 1;
       await audio.play();
       hasStartedMusicRef.current = true;
-      setAudioUnlocked(true);
+      audioUnlockedRef.current = true;
       setMusicAudible(true);
       return true;
-    } catch {
+    } catch (err) {
+      console.error("Audio play failed:", err);
       return false;
     }
   }, []);
@@ -546,11 +702,22 @@ export default function WeddingInvitation() {
     }
   };
 
+  useEffect(() => {
+    if (isOpened) {
+      document.body.style.overflow = "auto";
+    } else {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpened]);
+
   return (
     <main
-      className={`h-[100dvh] w-full bg-[#fdfaf5] transition-all duration-1000 ${isOpened
-        ? "overflow-y-auto overflow-x-hidden"
-        : "overflow-hidden flex items-center justify-center"
+      className={`min-h-screen w-full bg-[#fdfaf5] transition-all duration-1000 ${isOpened
+        ? "relative"
+        : "h-[100dvh] overflow-hidden flex items-center justify-center"
         } relative font-montserrat scroll-smooth`}
     >
       <FloatingPetals />
@@ -562,7 +729,7 @@ export default function WeddingInvitation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
-            className="fixed inset-0 z-[100] bg-[#f8f6f2] flex items-center justify-center overflow-hidden touch-manipulation"
+            className="fixed inset-0 z-[100] bg-[#001410] flex items-center justify-center overflow-hidden touch-manipulation"
           >
             <EnvelopeOpener onOpen={() => {
               setIsOpened(true);
@@ -708,42 +875,7 @@ export default function WeddingInvitation() {
 
 
 
-            <section className="relative py-24 md:py-36 bg-marble-emerald flex flex-col items-center overflow-hidden z-20">
-              {/* Subtle vignette over the deep green */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-0"></div>
-
-              {/* Ultra-fine perimeter border */}
-              <div className="absolute inset-4 md:inset-8 border-[0.5px] border-[#d4af37]/20 pointer-events-none z-10 rounded-sm"></div>
-
-              <div className="w-full max-w-[1000px] px-6 flex flex-col items-center text-center relative z-10">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1 }}
-                  className="relative mb-14 md:mb-20 flex flex-col items-center"
-                >
-                  <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.5em] md:tracking-[0.7em] text-[#f7e7ce]/70 font-medium uppercase mb-6 drop-shadow-sm">
-                    The Countdown
-                  </p>
-
-                  <h2 className="font-alex text-6xl md:text-[8rem] text-gold-gradient leading-[0.85] tracking-wide py-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-                    Save the Date
-                  </h2>
-
-                  <div className="mt-10 flex items-center justify-center gap-6">
-                    <div className="h-[0.5px] w-12 md:w-20 bg-[#d4af37]/40 shadow-[0_0_5px_rgba(212,175,55,0.2)]" />
-                    <span className="font-montserrat text-[10px] md:text-[13px] tracking-[0.4em] uppercase text-[#f7e7ce] font-semibold drop-shadow-md">
-                      May 09, 2026
-                    </span>
-                    <div className="h-[0.5px] w-12 md:w-20 bg-[#d4af37]/40 shadow-[0_0_5px_rgba(212,175,55,0.2)]" />
-                  </div>
-                </motion.div>
-
-                <CountdownTimer />
-
-              </div>
-            </section>
+            <CountdownTimer />
 
             <section className="relative py-24 md:py-36 bg-white overflow-hidden">
               <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
@@ -758,27 +890,28 @@ export default function WeddingInvitation() {
                   >
                     <div className="space-y-4">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-[1px] bg-[#047857]" />
-                        <span className="text-[#047857] font-bold uppercase tracking-[0.4em] text-[10px]">
-                          T H E · V E N U E
+                        <div className="w-12 h-[1px] bg-[#045e54]" />
+                        <span className="text-[#C9A227]">✦</span>
+                        <span className="text-[#045e54] font-bold uppercase tracking-[0.4em] text-[10px]">
+                          T H E | V E N U E
                         </span>
                       </div>
-                      <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#059669] leading-tight tracking-widest font-bold uppercase">
+                      <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#045e54] leading-tight tracking-widest font-bold uppercase">
                         Kithul Kanda
                       </h2>
-                      <p className="font-playball text-3xl md:text-5xl text-[#047857] italic mt-2">
+                      <p className="font-playball text-3xl md:text-5xl text-[#045e54] italic mt-2">
                         MOUNTAIN RESORT
                       </p>
                     </div>
 
-                    <div className="space-y-8 pl-6 border-l border-[#34d399]/40">
+                    <div className="space-y-8 pl-6 border-l border-[#48b0a3]/40">
                       <div className="flex items-start gap-4">
-                        <MapPin className="w-5 h-5 text-[#047857] mt-1 shrink-0" />
-                        <p className="text-lg md:text-xl text-[#047857] font-cinzel leading-relaxed tracking-wide">
+                        <MapPin className="w-5 h-5 text-[#045e54] mt-1 shrink-0" />
+                        <p className="text-lg md:text-xl text-[#045e54] font-cinzel leading-relaxed tracking-wide">
                           Kithul Kanda Mountain Resort, Padukka.
                         </p>
                       </div>
-                      <p className="text-[#047857]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
+                      <p className="text-[#045e54]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
                         We look forward to welcoming you to this beautiful resort to celebrate our
                         special day. Reception to follow LOVE LAUGHTER FOREVER.
                       </p>
@@ -789,7 +922,7 @@ export default function WeddingInvitation() {
                         onClick={() =>
                           window.open("https://maps.app.goo.gl/Fw6MGDC4ifQxHhRLA", "_blank")
                         }
-                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#047857] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#065f46]"
+                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#045e54] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#034d44]"
                       >
                         <MapPin className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
                         Get Directions
@@ -797,7 +930,7 @@ export default function WeddingInvitation() {
 
                       <button
                         onClick={() => setIsAccommodationOpen(true)}
-                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#047857] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] border-2 border-[#047857] overflow-hidden transition-all hover:bg-[#047857]/5"
+                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#045e54] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] border-2 border-[#045e54] overflow-hidden transition-all hover:bg-[#045e54]/5"
                       >
                         <Hotel className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
                         Room Rates
@@ -809,9 +942,9 @@ export default function WeddingInvitation() {
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="relative w-full aspect-[3/4] max-w-[450px] mx-auto bg-white p-3 shadow-[0_40px_80px_-20px_rgba(135,147,122,0.2)] border border-[#34d399]/50"
+                    className="relative w-full aspect-[3/4] max-w-[450px] mx-auto bg-white p-3 shadow-[0_40px_80px_-20px_rgba(135,147,122,0.2)] border border-[#48b0a3]/50"
                   >
-                    <div className="absolute inset-2 border-[0.5px] border-[#059669]/30 pointer-events-none z-20" />
+                    <div className="absolute inset-2 border-[0.5px] border-[#045e54]/30 pointer-events-none z-20" />
                     <div className="w-full h-full overflow-hidden bg-white relative">
                       <iframe
                         src="https://maps.google.com/maps?q=Kithul%20Kanda%20Mountain%20Resort,%20Padukka&t=&z=16&ie=UTF8&iwloc=&output=embed"
@@ -1016,7 +1149,7 @@ export default function WeddingInvitation() {
               </div>
             </section>
 
-            <div className="relative bg-[#34d399]/10">
+            <div className="relative bg-[#48b0a3]/10">
               <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none" />
 
               <section className="relative py-24 md:py-36 flex flex-col items-center overflow-hidden">
@@ -1027,27 +1160,27 @@ export default function WeddingInvitation() {
                     viewport={{ once: true }}
                     className="flex flex-col items-center"
                   >
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#047857]/10 mb-8 mt-4 shadow-sm border border-[#047857]/20">
-                      <Sparkles className="w-8 h-8 text-[#047857]" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#045e54]/10 mb-8 mt-4 shadow-sm border border-[#045e54]/20">
+                      <Sparkles className="w-8 h-8 text-[#045e54]" />
                     </div>
 
-                    <h2 className="font-script text-[4.5rem] sm:text-[5rem] md:text-[7rem] text-[#059669] mb-6 drop-shadow-sm leading-none">
+                    <h2 className="font-script text-[4.5rem] sm:text-[5rem] md:text-[7rem] text-[#045e54] mb-6 drop-shadow-sm leading-none">
                       Best Wishes
                     </h2>
-                    <div className="h-px w-24 bg-[#34d399] mb-8" />
+                    <div className="h-px w-24 bg-[#48b0a3] mb-8" />
 
-                    <p className="text-[#047857] text-sm md:text-lg leading-relaxed max-w-xl mx-auto mb-16 font-serif tracking-[0.1em] px-4 uppercase font-bold">
+                    <p className="text-[#045e54] text-sm md:text-lg leading-relaxed max-w-xl mx-auto mb-16 font-serif tracking-[0.1em] px-4 uppercase font-bold">
                       Your presence at our wedding is the greatest gift of all. However, if you
                       wish to honor us with a message, we would be delighted to read it!
                     </p>
 
-                    <div className="w-full max-w-2xl mx-auto bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(6,78,59,0.1)] border border-[#34d399]/50 relative group card-marble">
+                    <div className="w-full max-w-2xl mx-auto bg-white p-8 md:p-14 shadow-[0_30px_70px_-15px_rgba(6,78,59,0.1)] border border-[#48b0a3]/50 relative group card-marble">
                       <div className="absolute inset-0 gold-foil-edge opacity-20 pointer-events-none" />
-                      <div className="absolute inset-2 border-[0.5px] border-[#059669]/20 pointer-events-none transition-colors duration-700" />
+                      <div className="absolute inset-2 border-[0.5px] border-[#045e54]/20 pointer-events-none transition-colors duration-700" />
 
                       <form className="space-y-12 text-left relative z-10" onSubmit={handleWishSubmit}>
                         <div className="space-y-4">
-                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#047857]/40">
+                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#045e54]/40">
                             From
                           </label>
                           <input
@@ -1058,12 +1191,12 @@ export default function WeddingInvitation() {
                               setWishStatus("idle");
                               setWishForm((prev) => ({ ...prev, name: e.target.value }));
                             }}
-                            className="w-full bg-transparent border-b border-[#34d399]/40 px-0 py-4 text-[#047857] placeholder:text-[#34d399]/30 focus:outline-none focus:border-[#059669] transition-all font-cinzel text-lg tracking-widest"
+                            className="w-full bg-transparent border-b border-[#48b0a3]/40 px-0 py-4 text-[#045e54] placeholder:text-[#48b0a3]/30 focus:outline-none focus:border-[#045e54] transition-all font-cinzel text-lg tracking-widest"
                             required
                           />
                         </div>
                         <div className="space-y-4">
-                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#047857]/40">
+                          <label className="text-[10px] uppercase tracking-[0.4em] font-bold text-[#045e54]/40">
                             Message
                           </label>
                           <textarea
@@ -1074,7 +1207,7 @@ export default function WeddingInvitation() {
                               setWishStatus("idle");
                               setWishForm((prev) => ({ ...prev, message: e.target.value }));
                             }}
-                            className="w-full bg-transparent border-b border-[#34d399]/40 px-0 py-4 text-[#047857] placeholder:text-[#34d399]/30 focus:outline-none focus:border-[#059669] transition-all font-cinzel text-lg tracking-widest resize-none"
+                            className="w-full bg-transparent border-b border-[#48b0a3]/40 px-0 py-4 text-[#045e54] placeholder:text-[#48b0a3]/30 focus:outline-none focus:border-[#045e54] transition-all font-cinzel text-lg tracking-widest resize-none"
                             required
                           />
                         </div>
@@ -1092,7 +1225,7 @@ export default function WeddingInvitation() {
                           <button
                             type="submit"
                             disabled={wishStatus === "sending"}
-                            className="bg-[#047857] text-white px-12 py-5 font-bold uppercase tracking-[0.4em] text-[10px] hover:bg-[#065f46] transition-all duration-300 shadow-md disabled:opacity-70"
+                            className="bg-[#045e54] text-white px-12 py-5 font-bold uppercase tracking-[0.4em] text-[10px] hover:bg-[#034d44] transition-all duration-300 shadow-md disabled:opacity-70"
                           >
                             {wishStatus === "sending" ? "Sending..." : "Send Wishes"}
                           </button>
@@ -1146,7 +1279,7 @@ export default function WeddingInvitation() {
 
                   <div className="mt-20 pt-8 border-t-[0.5px] border-[#d4af37]/30 w-full max-w-xs md:max-w-md flex flex-col items-center gap-4">
                     <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-[#f7e7ce]/50 font-bold leading-relaxed flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                      <span>© 2026 Ama & Anjana</span>
+                      <span>(c) 2026 Ama & Anjana</span>
                       <span className="hidden md:inline text-[#d4af37]/30">|</span>
                       <span>All Rights Reserved</span>
                     </p>
@@ -1162,6 +1295,7 @@ export default function WeddingInvitation() {
         ref={audioRef}
         src={backgroundMusic}
         loop
+        autoPlay
         preload="auto"
         playsInline
         className="sr-only"
@@ -1176,7 +1310,7 @@ export default function WeddingInvitation() {
         onClick={() => handleSoundToggle()}
         aria-pressed={musicAudible}
         aria-label={musicAudible ? "Mute background music" : "Unmute background music"}
-        className="fixed bottom-6 left-6 z-[120] flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#059669] bg-white/95 text-[#047857] shadow-[0_0_0_4px_rgba(197,160,89,0.2),0_10px_36px_-6px_rgba(135,147,122,0.45)] backdrop-blur-md touch-manipulation transition-[transform,box-shadow] hover:scale-[1.05] hover:shadow-[0_0_0_5px_rgba(197,160,89,0.28),0_14px_44px_-6px_rgba(135,147,122,0.5)] active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#059669] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdfaf5]"
+        className="fixed bottom-6 left-6 z-[120] flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#045e54] bg-white/95 text-[#045e54] shadow-[0_0_0_4px_rgba(197,160,89,0.2),0_10px_36px_-6px_rgba(135,147,122,0.45)] backdrop-blur-md touch-manipulation transition-[transform,box-shadow] hover:scale-[1.05] hover:shadow-[0_0_0_5px_rgba(197,160,89,0.28),0_14px_44px_-6px_rgba(135,147,122,0.5)] active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#045e54] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdfaf5]"
       >
         {musicAudible ? <Volume2 className="h-6 w-6" strokeWidth={2} /> : <VolumeX className="h-6 w-6" strokeWidth={2} />}
       </motion.button>
@@ -1195,10 +1329,10 @@ export default function WeddingInvitation() {
           width: 8px;
         }
         ::-webkit-scrollbar-track {
-          background: #34d39933;
+          background: #48b0a333;
         }
         ::-webkit-scrollbar-thumb {
-          background: #04785766;
+          background: #045e5466;
           border-radius: 10px;
         }
       `,
@@ -1310,7 +1444,7 @@ function AdminPanel() {
 
         <button
           onClick={generateLink}
-          className="w-full bg-[#047857] text-white py-3 rounded-xl font-bold text-[10px] tracking-widest uppercase hover:bg-[#065f46] transition-all"
+          className="w-full bg-[#045e54] text-white py-3 rounded-xl font-bold text-[10px] tracking-widest uppercase hover:bg-[#034d44] transition-all"
         >
           Generate Personalized Link
         </button>

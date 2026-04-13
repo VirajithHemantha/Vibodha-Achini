@@ -10,7 +10,7 @@
   --font-playball: "Playball", cursive;
   --font-alex: "Alex Brush", cursive;
 
-  --color-emerald: #065f46;
+  --color-emerald: #023832;
   --color-paper: #fcfcf0;
 
   --color-theme-50: #ecfdf5;
@@ -19,12 +19,12 @@
   --color-theme-300: #6ee7b7;
   --color-theme-400: #34d399;
   --color-theme-500: #10b981;
-  --color-theme-600: #059669;
-  --color-theme-700: #047857;
-  --color-theme-800: #065f46;
-  --color-theme-900: #064e3b;
+  --color-theme-600: #024a41;
+  --color-theme-700: #023832;
+  --color-theme-800: #012b26;
+  --color-theme-900: #011f1a;
 
-  --color-primary: #047857;
+  --color-primary: #045e54;
   --color-ivory: #FFFFF0;
   --color-champagne: #F7E7CE;
   --color-background: #fdfaf5;
@@ -46,9 +46,9 @@ html,
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  height: 100%;
   width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
 .serif {
@@ -112,10 +112,11 @@ body {
 }
 
 .bg-marble-emerald {
-  background:
-    radial-gradient(circle at 10% 20%, rgba(6, 95, 70, 0.6) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(4, 120, 87, 0.5) 0%, transparent 40%),
-    linear-gradient(135deg, #022c22 0%, #064e3b 50%, #022c22 100%);
+  background-image: 
+    radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+    url('/images/footer_silk_bg.png');
+  background-size: cover;
+  background-position: center;
   position: relative;
   z-index: 20;
 }
@@ -124,11 +125,9 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    url("https://www.transparenttextures.com/patterns/black-scales.png"),
-    url("https://www.transparenttextures.com/patterns/natural-paper.png");
-  opacity: 0.15;
-  mix-blend-mode: overlay;
+  background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+  opacity: 0.1;
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 
