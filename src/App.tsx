@@ -593,89 +593,24 @@ export default function WeddingInvitation() {
               </div>
             </motion.button>
 
-            <section className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden bg-marble-emerald px-6 py-12 md:p-16 z-10">
-              {/* Add a subtle dark vignette to enhance the premium depth */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] pointer-events-none z-0"></div>
-
-              {/* Premium Gold Frame */}
-              <div className="absolute inset-3 md:inset-5 border border-[#d4af37]/20 pointer-events-none z-10 rounded-sm"></div>
-              <div className="absolute inset-4 md:inset-6 border-[1.5px] border-[#d4af37]/40 pointer-events-none z-10 rounded-sm shadow-[inset_0_0_20px_rgba(212,175,55,0.1)]"></div>
-              <div className="absolute top-8 left-8 w-12 h-12 md:w-16 md:h-16 border-t-[3px] border-l-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
-              <div className="absolute top-8 right-8 w-12 h-12 md:w-16 md:h-16 border-t-[3px] border-r-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
-              <div className="absolute bottom-8 left-8 w-12 h-12 md:w-16 md:h-16 border-b-[3px] border-l-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
-              <div className="absolute bottom-8 right-8 w-12 h-12 md:w-16 md:h-16 border-b-[3px] border-r-[3px] border-[#d4af37] pointer-events-none z-10 opacity-70 drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]"></div>
-
-              <div className="w-full max-w-2xl relative z-20 flex flex-col items-center justify-center text-center mt-[-4vh]">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-                  className="space-y-6 md:space-y-8 flex flex-col items-center w-full"
-                >
-                  <div className="w-20 md:w-28 opacity-70 mb-2 md:mb-4 select-none">
-                    <img src="/monogram_aa.png" alt="AA" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
-                  </div>
-
-                  <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.4em] text-[#f7e7ce] uppercase font-medium drop-shadow-md">
-                    Together with their families
-                  </p>
-
-                  <div className="space-y-2 md:space-y-4 pt-2">
-                    <h1 className="font-alex text-7xl md:text-[8.5rem] text-gold-gradient leading-[0.8] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] select-none py-2">
-                      Ama
-                    </h1>
-
-                    <div className="flex items-center justify-center gap-4">
-                      <p className="font-serif text-xl md:text-2xl text-[#d4af37] italic opacity-80 drop-shadow-md">and</p>
-                    </div>
-
-                    <h1 className="font-alex text-7xl md:text-[8.5rem] text-gold-gradient leading-[0.8] drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] select-none py-2">
-                      Anjana
-                    </h1>
-                  </div>
-
-                  <div className="space-y-6 pt-6 md:pt-10">
-                    <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.3em] text-[#f7e7ce] uppercase leading-relaxed font-medium drop-shadow-md">
-                      Request the honor of your presence<br />at their wedding
-                    </p>
-
-                    <div className="flex flex-col items-center gap-3">
-                      <p className="font-serif text-lg md:text-2xl text-white tracking-widest font-bold italic drop-shadow-md">
-                        Saturday, May 09, 2026
-                      </p>
-                      <p className="font-serif text-[13px] md:text-[16px] text-[#f7e7ce]/90 italic drop-shadow-md">
-                        at three o'clock in the afternoon
-                      </p>
-                    </div>
-
-                    <div className="pt-4 flex flex-col items-center gap-2">
-                      <div className="h-[0.5px] w-16 bg-[#d4af37]/60 mb-2 shadow-[0_0_5px_rgba(212,175,55,0.4)]"></div>
-                      <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.2em] text-[#fdfaf5] uppercase text-center font-medium leading-loose drop-shadow-md">
-                        WEDDING VENUE<br />
-                        KITHUL KANDA MOUNTAIN RESORT<br />
-                        MEEGODA, SL
-                      </p>
-                      <p className="font-serif text-[12px] md:text-[14px] text-[#d4af37] italic mt-2 font-bold drop-shadow-md">
-                        Reception to follow
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
+            <section className="w-full relative flex flex-col items-center justify-start md:justify-center overflow-hidden bg-[#fdfbf7] z-10 md:h-[100dvh]">
+              <img
+                src="/2.png"
+                alt="Ama and Anjana Wedding"
+                className="w-full h-auto md:absolute md:inset-0 md:h-full md:object-contain md:object-center drop-shadow-xl"
+              />
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2, duration: 1 }}
-                className="absolute bottom-8 md:bottom-10 z-30"
+                className="absolute bottom-6 md:bottom-10 z-30"
               >
                 <motion.div
                   animate={{ y: [0, 8, 0] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                   className="flex flex-col items-center gap-2"
                 >
-                  <p className="text-[9px] uppercase tracking-[0.4em] text-[#d4af37] font-bold opacity-80">Scroll</p>
-                  <ChevronDown className="w-4 h-4 text-[#d4af37] opacity-70" />
+                  <ChevronDown className="w-6 h-6 text-[#d4af37] drop-shadow-md" />
                 </motion.div>
               </motion.div>
             </section>
