@@ -1395,12 +1395,13 @@ export default function WeddingInvitation() {
                 <div className="absolute inset-4 md:inset-6 border-[0.5px] border-[#d4af37]/20 pointer-events-none z-10 hidden md:block rounded-sm shadow-[inset_0_0_15px_rgba(212,175,55,0.05)]"></div>
 
                 <div className="w-full max-w-4xl px-6 flex flex-col items-center text-center relative z-20">
-                    <div className="flex items-center gap-4 mb-8">
-                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
-                      <div className="w-1.5 h-1.5 rotate-45 border-[0.5px] border-[#d4af37]/60" />
-                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
-                    </div>
-
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2 }}
+                    className="flex flex-col items-center"
+                  >
                     <div className="flex items-center gap-4 mb-8">
                       <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
                       <div className="w-1.5 h-1.5 rotate-45 border-[0.5px] border-[#d4af37]/60" />
