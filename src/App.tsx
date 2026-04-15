@@ -505,7 +505,6 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 }
 
 export default function WeddingInvitation() {
-  const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isAccommodationOpen, setIsAccommodationOpen] = useState(false);
 
@@ -525,10 +524,6 @@ export default function WeddingInvitation() {
     if (to) {
       setGuestName(to.replace(/_/g, " ")); // Replace underscores with spaces for cleaner URLs
     }
-
-    // Perceived Performance: Set loaded after assets begin to buffer
-    const timer = setTimeout(() => setIsAppLoaded(true), 1500);
-    return () => clearTimeout(timer);
   }, []);
   // -----------------------------
 
@@ -711,33 +706,6 @@ export default function WeddingInvitation() {
     >
       <FloatingPetals />
 
-      <AnimatePresence>
-        {!isAppLoaded && (
-          <motion.div
-            key="preloader"
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[300] bg-[#fdfaf5] flex flex-col items-center justify-center"
-          >
-            <div className="relative">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="w-32 md:w-48 mb-8"
-              >
-                <img src="/monogram_aa.png" alt="TN" className="w-full h-auto mix-blend-multiply opacity-20" />
-              </motion.div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 border-2 border-[#d4af37]/20 border-t-[#d4af37] rounded-full animate-spin" />
-              </div>
-            </div>
-            <p className="font-cinzel text-xs tracking-[0.5em] text-[#d4af37] mt-4 animate-pulse uppercase">
-              Preparing Your Invitation
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <AnimatePresence mode="wait">
         {!isOpened ? (
           <motion.div
@@ -755,8 +723,6 @@ export default function WeddingInvitation() {
               autoPlay
               muted
               playsInline
-              preload="auto"
-              poster="/background.png"
               onEnded={() => {
                 setIsOpened(true);
                 void unlockAudioFromGesture();
@@ -995,7 +961,10 @@ export default function WeddingInvitation() {
                       <img
                         src={brideGroomImage}
                         alt="Niwarthana & Thenuka"
+                        loading="lazy"
                         decoding="async"
+                        width={450}
+                        height={600}
                         className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -1013,6 +982,10 @@ export default function WeddingInvitation() {
                       <img
                         src={secondaryImage}
                         alt="The Couple"
+                        loading="lazy"
+                        decoding="async"
+                        width={300}
+                        height={400}
                         className="w-full h-full object-cover rounded-lg"
                       />
                       {/* Floating Sparkle on the corner for 'Premium' feel */}
@@ -1422,15 +1395,10 @@ export default function WeddingInvitation() {
                 <div className="absolute inset-4 md:inset-6 border-[0.5px] border-[#d4af37]/20 pointer-events-none z-10 hidden md:block rounded-sm shadow-[inset_0_0_15px_rgba(212,175,55,0.05)]"></div>
 
                 <div className="w-full max-w-4xl px-6 flex flex-col items-center text-center relative z-20">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2 }}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="mb-8 w-20 md:w-28 opacity-80 select-none">
-                      <img src="/monogram_aa.png" alt="TN" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
+                      <div className="w-1.5 h-1.5 rotate-45 border-[0.5px] border-[#d4af37]/60" />
+                      <div className="h-[0.5px] w-12 md:w-16 bg-[#d4af37]/40" />
                     </div>
 
                     <div className="flex items-center gap-4 mb-8">
@@ -1482,8 +1450,7 @@ export default function WeddingInvitation() {
         ref={audioRef}
         src={backgroundMusic}
         loop
-        autoPlay
-        preload="auto"
+        preload="metadata"
         playsInline
         className="sr-only"
         aria-hidden
