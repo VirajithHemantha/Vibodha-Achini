@@ -2,16 +2,16 @@ import React, { useCallback, useEffect, useRef, useState, useMemo } from "react"
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Sparkles, MapPin, ChevronDown, Volume2, VolumeX, X, Hotel, MailOpen, Heart, Stars } from "lucide-react";
 import { useInView } from 'react-intersection-observer';
-import EnvelopeOpener from "./components/EnvelopeOpener";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
- * Names: Naween & Nadeesha
+ * Names: Niwarthana & Thenuka
  * Background: Cream/Sand
  * Accents: Green/Brown
  */
 
-const brideGroomImage = "/images/couple_aa.png";
+const brideGroomImage = "/DSC00263_1.jpg.jpeg";
+const secondaryImage = "/DSC05289_1.jpg.jpeg";
 const backgroundMusic = "/ama_anjana_flute.mp3";
 const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
 
@@ -49,17 +49,17 @@ function FloatingPetals() {
       return;
     }
 
-    const colors = ["#fdf5eb", "#f9ede0", "#f0e1cf", "#fefaf6"];
-    const petalCount = isMobile ? 10 : 18;
+    const colors = ["#ff0080", "#ff8c00", "#ffd700", "#00ffff", "#8a2be2", "#ffffff"];
+    const petalCount = isMobile ? 15 : 25;
     const newPetals = Array.from({ length: petalCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
-      size: Math.random() * 7 + 7,
+      size: Math.random() * 8 + 6,
       rotation: Math.random() * 360,
-      duration: Math.random() * 11 + 16,
+      duration: Math.random() * 12 + 14,
       delay: Math.random() * 20,
       color: colors[Math.floor(Math.random() * colors.length)],
-      drift: Math.random() * 24 - 12,
+      drift: Math.random() * 30 - 15,
     }));
 
     setPetals(newPetals);
@@ -115,7 +115,7 @@ function CountdownTimer() {
     triggerOnce: true,
   });
 
-  const targetDate = useMemo(() => new Date("May 09, 2026 17:00:00").getTime(), []);
+  const targetDate = useMemo(() => new Date("May 15, 2026 09:40:00").getTime(), []);
 
   const getTimeLeft = (): { days: number; hours: number; minutes: number; seconds: number } => {
     const now = new Date().getTime();
@@ -161,10 +161,11 @@ function CountdownTimer() {
   return (
     <section
       ref={ref}
-      className="relative py-24 md:py-36 bg-marble-emerald flex flex-col items-center overflow-hidden z-20"
+      className="relative py-24 md:py-36 bg-gradient-to-br from-[#0d3f38] via-[#045e54] to-[#0d3f38] flex flex-col items-center overflow-hidden z-20"
     >
-      {/* Subtle vignette over the deep green */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-0"></div>
+      {/* Texture & Glow Layer */}
+      <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none z-0" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.1),transparent_70%)] pointer-events-none z-0" />
 
       {/* Floating Ornaments */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -210,8 +211,8 @@ function CountdownTimer() {
             <Sparkles className="h-4 w-4 text-[#d4af37]" />
           </motion.div>
 
-          <h2 className="font-alex text-6xl md:text-[8rem] leading-tight text-white drop-shadow-lg">
-            Counting Down to <span className="relative inline-block text-gold-gradient">
+          <h2 className="font-alex text-6xl md:text-[8rem] leading-tight text-white drop-shadow-xl">
+            Counting Down to <span className="relative inline-block text-shimmer">
               Forever
               <motion.svg className="absolute -bottom-2 md:-bottom-4 left-0 w-full"
                 viewBox="0 0 100 20" preserveAspectRatio="none"
@@ -230,13 +231,13 @@ function CountdownTimer() {
             </span>
           </h2>
 
-          <p className="mx-auto mt-10 max-w-2xl text-[#f7e7ce]/80 font-montserrat tracking-widest text-sm uppercase">
+          <p className="mx-auto mt-10 max-w-2xl text-[#f7e7ce]/80 font-montserrat tracking-[0.3em] text-[10px] md:text-xs uppercase font-bold">
             Every second brings us closer to our blessed wedding day. We cannot wait to celebrate this grace-filled moment with you.
           </p>
         </motion.div>
 
-        <div className="w-full rounded-[2rem] border border-[#d4af37]/30 bg-black/20 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-6 md:p-8">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6">
+        <div className="w-full rounded-[2.5rem] border border-[#d4af37]/30 bg-black/20 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl sm:p-6 md:p-8">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8">
             {countdownItems.map((item, index) => (
               <motion.div
                 key={item.label}
@@ -248,10 +249,10 @@ function CountdownTimer() {
                   type: "spring",
                   bounce: 0.35
                 }}
-                whileHover={{ y: -8, scale: 1.02 }}
+                whileHover={{ y: -10, scale: 1.05 }}
                 className="group relative"
               >
-                <div className="relative overflow-hidden rounded-[1.8rem] border border-[#d4af37]/30 bg-[linear-gradient(160deg,rgba(255,255,255,0.05)_0%,rgba(0,0,0,0.3)_100%)] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 group-hover:shadow-[0_20px_45px_rgba(0,0,0,0.4)] md:p-7">
+                <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_15px_35px_rgba(0,0,0,0.3)] transition-all duration-300 group-hover:border-[#d4af37]/40 group-hover:bg-white/10 md:p-8">
                   <div className="absolute inset-0 opacity-[0.1]"
                     style={{
                       backgroundImage:
@@ -416,7 +417,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-[#fcfcf0]">
           <div>
             <h2 className="font-cinzel text-xl md:text-2xl text-[#045e54] font-bold">Accommodation Rates</h2>
-            <p className="text-[10px] uppercase tracking-widest text-[#045e54] mt-1">Kithul Kanda Mountain Resort</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#045e54] mt-1">Saminro Grand Palace, Makola</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
             <X size={24} className="text-slate-400" />
@@ -708,16 +709,30 @@ export default function WeddingInvitation() {
       <AnimatePresence mode="wait">
         {!isOpened ? (
           <motion.div
-            key="envelope-stage"
+            key="video-intro"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8 } }}
-            className="fixed inset-0 z-[100] bg-[#001410] flex items-center justify-center overflow-hidden touch-manipulation"
-          >
-            <EnvelopeOpener onOpen={() => {
+            exit={{ opacity: 0, transition: { duration: 1 } }}
+            onClick={() => {
               setIsOpened(true);
               void unlockAudioFromGesture();
-            }} />
+            }}
+            className="fixed inset-0 z-[200] bg-black flex items-center justify-center overflow-hidden cursor-pointer"
+          >
+            <video
+              autoPlay
+              muted
+              playsInline
+              onEnded={() => {
+                setIsOpened(true);
+                void unlockAudioFromGesture();
+              }}
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/intro_video.mp4" type="video/mp4" />
+            </video>
+
+            <div className="absolute inset-0 z-10 bg-black/5" />
           </motion.div>
         ) : (
           <motion.div
@@ -743,30 +758,169 @@ export default function WeddingInvitation() {
               </div>
             </motion.button>
 
-            <section className="w-full relative flex flex-col items-center justify-start md:justify-center overflow-hidden bg-[#fdfbf7] z-10 md:h-[100dvh]">
-              <img
-                src="/2.png"
-                alt="Ama and Anjana Wedding"
-                className="w-full h-auto md:absolute md:inset-0 md:h-full md:object-contain md:object-center drop-shadow-xl"
-              />
+            <section className="relative z-10 flex min-h-[95dvh] w-full items-center justify-center overflow-hidden bg-gradient-to-br from-[#0d3f38] via-[#045e54] to-[#0d3f38] px-4 py-12 sm:px-8 md:min-h-[100dvh]">
+              {/* Decorative background elements */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] pointer-events-none z-0" />
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.1),transparent_70%)] pointer-events-none z-0" />
+
+                {/* Extra Floating Hearts for 'Cute' feel */}
+                <motion.div
+                  animate={{ y: [-10, 10, -10], rotate: [0, 10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute top-20 left-[10%] text-pink-400/20"
+                >
+                  <Heart size={40} fill="currentColor" />
+                </motion.div>
+                <motion.div
+                  animate={{ y: [10, -10, 10], rotate: [0, -10, 0] }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                  className="absolute bottom-40 right-[15%] text-orange-300/20"
+                >
+                  <Heart size={30} fill="currentColor" />
+                </motion.div>
+
+                {/* SVG Floral Pattern Overlay */}
+                <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
+              </div>
+
+              <div className="pointer-events-none absolute -left-10 top-20 h-40 w-40 rounded-full border-2 border-[#d4af37]/10 blur-[2px] animate-float-slow" />
+              <div className="pointer-events-none absolute -right-10 bottom-20 h-32 w-32 rounded-full border-2 border-[#d4af37]/10 blur-[2px] animate-float-slow" style={{ animationDelay: '1.5s' }} />
+
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-20 w-full max-w-5xl rounded-[2.5rem] glass-morphism px-5 py-10 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.3)] sm:px-12 sm:py-16 md:px-20 md:py-20"
+              >
+                {/* Side corner ornaments - modified for better mobile fit */}
+                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#d4af37]/30 rounded-tl-[2.5rem]" />
+                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#d4af37]/30 rounded-br-[2.5rem]" />
+
+                <div className="mb-6 flex items-center justify-center gap-4">
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: isLikelyMobileOrTablet() ? 40 : 80 }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                    className="h-[1.5px] bg-gradient-to-r from-transparent to-[#d4af37]"
+                  />
+                  <div className="animate-heartbeat">
+                    <Heart className="h-5 w-5 text-pink-500 fill-pink-500/20" />
+                  </div>
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: isLikelyMobileOrTablet() ? 40 : 80 }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                    className="h-[1.5px] bg-gradient-to-l from-transparent to-[#d4af37]"
+                  />
+                </div>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="text-center font-montserrat text-[9px] font-bold uppercase tracking-[0.4em] text-[#d4af37] sm:text-[10px]"
+                >
+                  Are You Ready?
+                </motion.p>
+
+                <h1 className="mt-6 text-center font-alex text-[2.8rem] leading-[1.1] text-[#0d3f38] drop-shadow-[0_2px_8px_rgba(0,0,0,0.05)] sm:text-[4.5rem] md:text-[6.5rem] lg:text-[7.5rem]">
+                  <span className="text-shimmer block">Niwarthana</span>
+                  <div className="my-2 flex items-center justify-center gap-4">
+                    <div className="h-px w-16 bg-[#0d3f38]/20" />
+                    <span className="font-serif text-3xl italic text-[#d4af37] sm:text-4xl md:text-5xl">&amp;</span>
+                    <div className="h-px w-16 bg-[#0d3f38]/20" />
+                  </div>
+                  <span className="text-shimmer block">Thenuka</span>
+                </h1>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1, duration: 1 }}
+                  className="mt-8 mb-10 text-center"
+                >
+                  <p className="font-cinzel text-xl text-[#0d3f38] tracking-[0.2em]">MAY 15 | 2026</p>
+                </motion.div>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2 }}
+                  className="mx-auto max-w-2xl text-center font-montserrat text-[11px] font-medium uppercase tracking-[0.25em] text-slate-600 leading-relaxed sm:text-xs"
+                >
+                  With joyous hearts, we invite you to share in our celebration of love and new beginnings
+                </motion.p>
+
+                <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
+                  {[
+                    { label: "Ceremony", value: "Poruwa 9.40 AM" },
+                    { label: "Venue", value: "Saminro Grand Palace" },
+                    { label: "Reception", value: "9.30 AM - 4.00 PM" }
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.4 + (i * 0.1) }}
+                      className="group relative rounded-3xl border border-[#d4af37]/15 bg-white/40 p-4 text-center backdrop-blur-sm transition-all hover:bg-white/70 hover:border-[#d4af37]/30 shadow-sm"
+                    >
+                      <p className="text-[8px] uppercase tracking-[0.25em] text-[#d4af37] font-bold mb-1">{item.label}</p>
+                      <p className="font-cinzel text-xs text-[#0d3f38] tracking-wider sm:text-sm">{item.value}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.8 }}
+                  className="mt-10 text-center"
+                >
+                  <div className="inline-flex items-center gap-3 rounded-full border border-pink-200/50 bg-white/40 px-6 py-2 backdrop-blur-md shadow-sm">
+                    <Heart className="h-4 w-4 text-pink-500 fill-pink-500 animate-heartbeat" />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-pink-600/80">SAVE THE DATE • MAY 15</span>
+                    <Heart className="h-4 w-4 text-pink-500 fill-pink-500 animate-heartbeat" />
+                  </div>
+                </motion.div>
+              </motion.div>
+
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 2, duration: 1 }}
-                className="absolute bottom-6 md:bottom-10 z-30"
+                transition={{ delay: 1.3, duration: 1 }}
+                className="absolute bottom-6 z-30 md:bottom-10"
               >
                 <motion.div
                   animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 2.3, repeat: Infinity, ease: "easeInOut" }}
                   className="flex flex-col items-center gap-2"
                 >
-                  <ChevronDown className="w-6 h-6 text-[#d4af37] drop-shadow-md" />
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#7e6720]">Scroll</span>
+                  <ChevronDown className="h-6 w-6 text-[#b88d1b] drop-shadow-md" />
                 </motion.div>
               </motion.div>
             </section>
 
             <section className="relative py-24 md:py-36 w-full flex flex-col items-center overflow-hidden z-10 border-b-[0.5px] border-[#d4af37]/30 bg-[#fdfaf5]">
               <div className="absolute inset-0 opacity-[0.5] bg-[url('https://www.transparenttextures.com/patterns/white-marble.png')] pointer-events-none" />
+
+              {/* Cute heart accents for 'Cute' feel */}
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 5, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute top-10 right-10 text-pink-300 opacity-40"
+              >
+                <Heart size={30} fill="currentColor" />
+              </motion.div>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+                className="absolute bottom-10 left-10 text-pink-300 opacity-40"
+              >
+                <Heart size={20} fill="currentColor" />
+              </motion.div>
+
               <div className="absolute top-12 left-12 w-8 h-8 border-t-[0.5px] border-l-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
               <div className="absolute top-12 right-12 w-8 h-8 border-t-[0.5px] border-r-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
               <div className="absolute bottom-12 left-12 w-8 h-8 border-b-[0.5px] border-l-[0.5px] border-[#d4af37] opacity-60 hidden md:block"></div>
@@ -779,46 +933,59 @@ export default function WeddingInvitation() {
                   viewport={{ once: true }}
                   className="flex flex-col items-center mb-16"
                 >
-                  <div className="mb-6 w-32 md:w-48 opacity-90 select-none">
-                    <img src="/monogram_aa.png" alt="AA" className="w-full h-auto mix-blend-multiply" />
-                  </div>
-                  <p className="tracking-[0.5em] md:tracking-[0.7em] text-[#d4af37] text-[10px] md:text-[12px] uppercase font-montserrat font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">
-                    Together with their families
+                  <p className="tracking-[0.4em] md:tracking-[0.7em] text-[#d4af37] text-[9px] md:text-[12px] uppercase font-montserrat font-bold drop-shadow-sm">
+                    TOGETHER WE REQUEST THE HONOUR OF YOUR PRESENCE
                   </p>
-                  <p className="text-slate-600 font-serif text-[16px] md:text-[22px] italic tracking-wide mt-6 mb-2">
-                    we joyfully invite you to celebrate the wedding of
+                  <p className="text-slate-500 font-serif text-[15px] md:text-[22px] italic tracking-wide mt-6 mb-2 uppercase">
+                    TO CELEBRATE THE WEDDING OF THEIR CHILDREN
                   </p>
                   <div className="pt-4 pb-2 w-full flex justify-center">
-                    <span className="text-slate-800 font-alex text-5xl md:text-6xl block my-2 drop-shadow-sm lowercase first-letter:uppercase">
-                      {guestName || "Our Beloved Guests"}
+                    <span className="text-[#0d3f38] font-alex text-[2.8rem] md:text-6xl block my-2 drop-shadow-sm leading-tight text-center">
+                      {guestName || "MR. / MR. & MRS. / MS. / FAMILY"}
                     </span>
                   </div>
                   <div className="h-[0.5px] w-24 bg-[#d4af37]/50 mt-6" />
                 </motion.div>
 
                 <div className="relative w-full flex flex-col md:flex-row items-center justify-center gap-16 lg:gap-32 mt-4 mb-16">
-                  {/* Image side - elegant framed portrait */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2 }}
-                    className="relative w-[280px] md:w-[350px] lg:w-[400px] aspect-[4/5] flex-shrink-0"
-                  >
-                    {/* Frame offset */}
-                    <div className="absolute -inset-4 border-[0.5px] border-[#d4af37]/40 z-0 hidden md:block"></div>
-                    <div className="absolute -inset-2 border-[1.5px] border-[#d4af37] z-0 opacity-20 hidden md:block"></div>
-
-                    <div className="w-full h-full relative z-10 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-slate-50 border-[0.5px] border-[#d4af37]/30">
+                  {/* Premium Dual Image Layout */}
+                  <div className="relative w-[300px] md:w-[450px] aspect-[3/4] flex-shrink-0 mb-12 md:mb-0">
+                    {/* Main Portrait */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5 }}
+                      className="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white group"
+                    >
                       <img
                         src={brideGroomImage}
-                        alt="Ama and Anjana"
-                        loading="lazy"
-                        className="w-full h-full object-cover grayscale-[0.2] contrast-105 transition-transform duration-1000 hover:scale-[1.03]"
+                        alt="Niwarthana & Thenuka"
+                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                    </div>
-                  </motion.div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </motion.div>
+
+                    {/* Overlapping Secondary Image - 'Cute' feel */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -30, y: 30, rotate: -5 }}
+                      whileInView={{ opacity: 1, x: 0, y: 0, rotate: -8 }}
+                      transition={{ delay: 0.8, duration: 1.2 }}
+                      viewport={{ once: true }}
+                      whileHover={{ rotate: -5, scale: 1.05 }}
+                      className="absolute -bottom-6 -left-6 md:-bottom-10 md:-left-12 w-[60%] aspect-[4/5] bg-white p-2 rounded-xl shadow-2xl z-20 border border-[#d4af37]/30"
+                    >
+                      <img
+                        src={secondaryImage}
+                        alt="The Couple"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      {/* Floating Sparkle on the corner for 'Premium' feel */}
+                      <div className="absolute -top-3 -right-3 text-[#d4af37] animate-pulse">
+                        <Sparkles size={20} />
+                      </div>
+                    </motion.div>
+                  </div>
 
                   {/* Minimalist Names side */}
                   <motion.div
@@ -826,29 +993,32 @@ export default function WeddingInvitation() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.2, delay: 0.2 }}
-                    className="flex flex-col items-center md:items-start text-center md:text-left space-y-6 md:space-y-10 z-20"
+                    className="flex flex-col items-center md:items-start text-center md:text-left space-y-4 md:space-y-10 z-20 w-full"
                   >
-                    <div className="w-full flex justify-center md:justify-start">
-                      <h3 className="text-[5rem] sm:text-7xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-normal drop-shadow-sm px-4 md:px-2 pb-2 md:pb-4">
-                        Ama
+                    <div className="w-full flex justify-center md:justify-start overflow-hidden">
+                      <h3 className="text-[3.5rem] sm:text-6xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-none drop-shadow-sm px-2 pb-2">
+                        Niwarthana
                       </h3>
                     </div>
 
-                    <div className="flex items-center gap-6 w-full justify-center md:justify-start pl-2 md:pl-6 -mt-2 -mb-2 md:mt-0 md:mb-0">
-                      <div className="h-[0.5px] w-12 bg-[#d4af37]/40 hidden md:block" />
-                      <span className="font-serif text-4xl md:text-6xl text-slate-400 italic font-light">&</span>
-                      <div className="h-[0.5px] w-12 bg-[#d4af37]/40 hidden md:block" />
+                    <div className="flex items-center gap-4 w-full justify-center md:justify-start px-4 md:pl-6">
+                      <div className="h-[0.5px] flex-1 max-w-[40px] bg-[#d4af37]/40" />
+                      <span className="font-serif text-2xl md:text-6xl text-slate-400 italic font-light">&</span>
+                      <div className="h-[0.5px] flex-1 max-w-[40px] bg-[#d4af37]/40" />
                     </div>
 
-                    <div className="w-full flex justify-center md:justify-start">
-                      <h3 className="text-[5rem] sm:text-7xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-normal drop-shadow-sm px-4 md:px-2 pt-2 md:pt-4">
-                        Anjana
+                    <div className="w-full flex justify-center md:justify-start overflow-hidden">
+                      <h3 className="text-[3.5rem] sm:text-6xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-none drop-shadow-sm px-2 pt-2">
+                        Thenuka
                       </h3>
                     </div>
 
-                    <div className="pt-4 md:pt-8 pl-0 md:pl-2">
-                      <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.4em] text-slate-400 uppercase font-bold text-center md:text-left">
-                        Two souls, one heart
+                    <div className="pt-6 md:pt-8 w-full">
+                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center md:text-left leading-relaxed px-2">
+                        Loving Daughter of Mr. Chaminda & Mrs. Niluka
+                      </p>
+                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center md:text-left leading-relaxed px-2">
+                        Loving Son of Mr. Ananda & Mrs. Manjula
                       </p>
                     </div>
                   </motion.div>
@@ -880,30 +1050,29 @@ export default function WeddingInvitation() {
                         </span>
                       </div>
                       <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#045e54] leading-tight tracking-widest font-bold uppercase">
-                        Kithul Kanda
+                        Saminro Grand Palace
                       </h2>
                       <p className="font-playball text-3xl md:text-5xl text-[#045e54] italic mt-2">
-                        MOUNTAIN RESORT
+                        MAKOLA
                       </p>
                     </div>
 
                     <div className="space-y-8 pl-6 border-l border-[#48b0a3]/40">
                       <div className="flex items-start gap-4">
                         <MapPin className="w-5 h-5 text-[#045e54] mt-1 shrink-0" />
-                        <p className="text-lg md:text-xl text-[#045e54] font-cinzel leading-relaxed tracking-wide">
-                          Kithul Kanda Mountain Resort, Padukka.
+                        <p className="text-lg md:text-xl text-[#045e54] font-cinzel leading-relaxed tracking-wide uppercase">
+                          Saminro Grand Palace, Makola.
                         </p>
                       </div>
                       <p className="text-[#045e54]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
-                        We look forward to welcoming you to this beautiful resort to celebrate our
-                        special day. Reception to follow LOVE LAUGHTER FOREVER.
+                        (Poruwa Ceremony at 9.40 AM) FRIDAY, TH 15 MAY 2026. From 9.30 AM to 4.00 PM.
                       </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
                       <button
                         onClick={() =>
-                          window.open("https://maps.app.goo.gl/Fw6MGDC4ifQxHhRLA", "_blank")
+                          window.open("https://www.google.com/maps/search/?api=1&query=Saminro+Grand+Palace+Makola", "_blank")
                         }
                         className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#045e54] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#034d44]"
                       >
@@ -911,13 +1080,6 @@ export default function WeddingInvitation() {
                         Get Directions
                       </button>
 
-                      <button
-                        onClick={() => setIsAccommodationOpen(true)}
-                        className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#045e54] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] border-2 border-[#045e54] overflow-hidden transition-all hover:bg-[#045e54]/5"
-                      >
-                        <Hotel className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
-                        Room Rates
-                      </button>
                     </div>
                   </motion.div>
 
@@ -930,7 +1092,7 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-2 border-[0.5px] border-[#045e54]/30 pointer-events-none z-20" />
                     <div className="w-full h-full overflow-hidden bg-white relative">
                       <iframe
-                        src="https://maps.google.com/maps?q=Kithul%20Kanda%20Mountain%20Resort,%20Padukka&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                        src="https://maps.google.com/maps?q=Saminro%20Grand%20Palace,%20Makola&t=&z=16&ie=UTF8&iwloc=&output=embed"
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}
@@ -1007,11 +1169,8 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-3 md:inset-4 border-[0.5px] border-[#d4af37]/20 pointer-events-none" />
 
                     <div className="w-full flex flex-col items-center mt-6 relative z-10 px-2 md:px-6">
-                      <p className="font-montserrat text-[10px] md:text-[11px] tracking-[0.5em] text-slate-500 uppercase font-medium mb-2">
-                        Kindly Respond By
-                      </p>
-                      <p className="font-serif text-[12px] md:text-[14px] text-slate-800 italic font-semibold mb-6">
-                        August 15, 2026
+                      <p className="font-montserrat text-[10px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-medium mb-2 text-center leading-relaxed">
+                        RSVP - Chaminda 077 909 0515 | Thenuka 076 850 4398
                       </p>
 
                       <div className="flex items-center justify-center gap-4 w-full mb-8">
@@ -1236,7 +1395,7 @@ export default function WeddingInvitation() {
                     className="flex flex-col items-center"
                   >
                     <div className="mb-8 w-20 md:w-28 opacity-80 select-none">
-                      <img src="/monogram_aa.png" alt="AA" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                      <img src="/monogram_aa.png" alt="TN" className="w-full h-auto brightness-0 invert drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
                     </div>
 
                     <div className="flex items-center gap-4 mb-8">
@@ -1248,27 +1407,27 @@ export default function WeddingInvitation() {
                     <p className="font-montserrat text-[9px] md:text-[11px] tracking-[0.5em] text-[#f7e7ce]/70 uppercase font-medium mb-4">
                       With heartfelt gratitude
                     </p>
-                    
+
                     <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 mt-4">
                       <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
-                        Ama
+                        Niwarthana
                       </h2>
                       <span className="font-serif text-3xl md:text-5xl text-[#d4af37] italic opacity-80 drop-shadow-md pb-2">&</span>
                       <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
-                        Anjana
+                        Thenuka
                       </h2>
                     </div>
                   </motion.div>
 
                   <div className="mt-20 pt-8 border-t-[0.5px] border-[#d4af37]/30 w-full max-w-xs md:max-w-md flex flex-col items-center gap-4">
                     <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-[#f7e7ce]/50 font-bold leading-relaxed flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                      <span>© 2026 Ama & Anjana</span>
+                      <span>© 2026 Niwarthana & Thenuka</span>
                       <span className="hidden md:inline text-[#d4af37]/30">|</span>
                       <span>All Rights Reserved</span>
                     </p>
-                    <a 
-                      href="https://wa.me/94707819074" 
-                      target="_blank" 
+                    <a
+                      href="https://wa.me/94707819074"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-[9px] tracking-[0.3em] text-[#d4af37]/60 hover:text-[#d4af37] transition-all uppercase font-medium flex items-center gap-2"
                     >

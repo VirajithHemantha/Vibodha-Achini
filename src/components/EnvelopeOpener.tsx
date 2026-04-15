@@ -334,9 +334,9 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                       className="translate-y-4"
                     >
                       <h3 className="font-serif text-[1.7rem] tracking-[0.14em] text-[#064e3b] drop-shadow-[0_2px_8px_rgba(0,0,0,0.18)] flex items-center justify-center gap-4 sm:gap-6">
-                        <span>AMA</span>
+                        <span>T</span>
                         <span aria-hidden="true">&amp;</span>
-                        <span>ANJANA</span>
+                        <span>N</span>
                       </h3>
                       <div className="mt-4 flex items-center justify-center gap-3">
                         <span className="h-px w-10 bg-[#C9A227]/50" />
@@ -356,7 +356,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                     }}
                     className="absolute left-1/2 top-[54%] z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#f2d89c]/40 bg-[radial-gradient(circle_at_30%_30%,#10b981_0%,#023832_55%,#011f1a_100%)] shadow-[0_10px_30px_rgba(1,31,26,0.45)]"
                   >
-                    <span className="font-serif text-lg text-[#f5e6c8]">A ✦ A</span>
+                    <span className="font-serif text-lg text-[#f5e6c8]">T ✦ N</span>
                   </motion.div>
 
                   {/* Hover sheen */}
@@ -394,17 +394,17 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                     {/* Card frame */}
                     <div className="absolute inset-3 rounded-[18px] border border-[#C9A227]/25" />
                     <div className="absolute left-1/2 top-4 h-8 w-8 -translate-x-1/2 rounded-full border border-[#C9A227]/50 bg-white/70 text-center text-[10px] leading-8 text-[#8c6a16]">
-                      AA
+                      TN
                     </div>
 
                     {/* Card ornament */}
                     <div className="relative text-center">
                       <div className="space-y-2 mb-3">
-                        <p className="text-[9px] uppercase tracking-[0.28em] text-[#8c6a16]">
-                          Together with their families
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-[#8c6a16] leading-relaxed">
+                          TOGETHER WE REQUEST THE HONOUR OF YOUR PRESENCE
                         </p>
-                        <p className="text-[9px] leading-5 text-[#6a4d0d]">
-                          Celebrate with us the beginning of our new life together
+                        <p className="text-[9px] leading-5 text-[#6a4d0d] uppercase">
+                          TO CELEBRATE THE WEDDING OF THEIR CHILDREN
                         </p>
                       </div>
 
@@ -415,15 +415,15 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                       </div>
 
                       <h2 className="mt-5 font-serif text-4xl font-light tracking-[0.08em] text-[#064e3b]">
-                        AMA
+                        NIWARTHANA
                       </h2>
                       <p className="mt-1 font-serif text-lg italic text-[#b08a1f]">&</p>
                       <h2 className="font-serif text-4xl font-light tracking-[0.08em] text-[#064e3b]">
-                        ANJANA
+                        THENUKA
                       </h2>
 
                       <p className="mx-auto mt-5 max-w-[240px] text-sm leading-7 text-[#5f5146]">
-                        Invite you to witness a blessed marriage ceremony filled with love and joy.
+                        (Poruwa Ceremony at 9.40 AM)
                       </p>
 
                       <div className="mt-6 flex items-center justify-center gap-3">
@@ -433,7 +433,7 @@ export default function EnvelopeOpener({ onOpen }: EnvelopeOpenerProps) {
                       </div>
 
                       <p className="mt-5 text-[11px] uppercase tracking-[0.36em] text-[#8c6a16]">
-                        May 09, 2026
+                        May 15, 2026
                       </p>
                     </div>
                   </div>
