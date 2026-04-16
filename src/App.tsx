@@ -627,13 +627,19 @@ export default function WeddingInvitation() {
       throw new Error("Missing VITE_GOOGLE_SCRIPT_URL");
     }
 
-    const response = await fetch(googleScriptUrl, {
-      method: "POST",
-      body: new URLSearchParams(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error("Request failed");
+    try {
+      await fetch(googleScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: new URLSearchParams(payload),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+      // With no-cors, we can't check response.ok, so we assume success if no promise rejection
+    } catch (err) {
+      console.error("Submission error:", err);
+      throw err;
     }
   };
 
@@ -1278,7 +1284,7 @@ export default function WeddingInvitation() {
                           >
                             {rsvpStatus === "success"
                               ? "Thank you! RSVP sent successfully."
-                              : "Please enter your name and try again."}
+                              : "Something went wrong. Please try again."}
                           </p>
                         )}
 
@@ -1368,7 +1374,7 @@ export default function WeddingInvitation() {
                           >
                             {wishStatus === "success"
                               ? "Wish sent successfully."
-                              : "Please enter your name and wish."}
+                              : "Something went wrong. Please try again."}
                           </p>
                         )}
                         <div className="pt-6 flex justify-center">
