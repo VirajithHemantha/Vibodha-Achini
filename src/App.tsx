@@ -5,13 +5,11 @@ import { useInView } from 'react-intersection-observer';
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
- * Names: Niwarthana & Thenuka
+ * Names: Achini malsha & Vibodha Vimukthi
  * Background: Cream/Sand
  * Accents: Green/Brown
  */
 
-const brideGroomImage = "/DSC00263_1.jpg.jpeg";
-const secondaryImage = "/DSC05289_1.jpg.jpeg";
 const backgroundMusic = "/ama_anjana_flute.mp3";
 const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
 
@@ -115,7 +113,7 @@ function CountdownTimer() {
     triggerOnce: true,
   });
 
-  const targetDate = useMemo(() => new Date("May 15, 2026 09:40:00").getTime(), []);
+  const targetDate = useMemo(() => new Date("August 27, 2026 09:00:00").getTime(), []);
 
   const getTimeLeft = (): { days: number; hours: number; minutes: number; seconds: number } => {
     const now = new Date().getTime();
@@ -505,7 +503,7 @@ function AccommodationModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 }
 
 export default function WeddingInvitation() {
-  const [isOpened, setIsOpened] = useState(false);
+  const [introState, setIntroState] = useState<'button' | 'video' | 'opened'>('button');
   const [isAccommodationOpen, setIsAccommodationOpen] = useState(false);
 
   const [rsvpForm, setRsvpForm] = useState({
@@ -617,10 +615,10 @@ export default function WeddingInvitation() {
   }, [unlockAudioFromGesture]);
 
   useEffect(() => {
-    if (isOpened) {
+    if (introState === 'opened') {
       preloadAssets();
     }
-  }, [isOpened]);
+  }, [introState]);
 
   const submitToGoogleSheet = async (payload: Record<string, string>) => {
     if (!googleScriptUrl) {
@@ -693,7 +691,7 @@ export default function WeddingInvitation() {
   };
 
   useEffect(() => {
-    if (isOpened) {
+    if (introState === 'opened') {
       document.body.style.overflow = "auto";
     } else {
       document.body.style.overflow = "hidden";
@@ -701,11 +699,11 @@ export default function WeddingInvitation() {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpened]);
+  }, [introState]);
 
   return (
     <main
-      className={`min-h-screen w-full bg-[#fdfaf5] transition-all duration-1000 ${isOpened
+      className={`min-h-screen w-full bg-[#fdfaf5] transition-all duration-1000 ${introState === 'opened'
         ? "relative"
         : "h-[100dvh] overflow-hidden flex items-center justify-center"
         } relative font-montserrat scroll-smooth`}
@@ -713,14 +711,36 @@ export default function WeddingInvitation() {
       <FloatingPetals />
 
       <AnimatePresence mode="wait">
-        {!isOpened ? (
+        {introState === 'button' && (
+          <motion.div
+            key="button-intro"
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[300] bg-[#fdfaf5] flex flex-col items-center justify-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+            >
+              <h2 className="font-alex text-4xl md:text-6xl text-[#0d3f38] mb-6">Achini malsha & Vibodha Vimukthi</h2>
+              <button
+                onClick={() => setIntroState('video')}
+                className="px-8 py-3 bg-[#045e54] text-white rounded-full font-montserrat text-xs uppercase tracking-[0.2em] hover:bg-[#034d44] transition-colors shadow-lg cursor-pointer"
+              >
+                View Invitation
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {introState === 'video' && (
           <motion.div
             key="video-intro"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 1 } }}
             onClick={() => {
-              setIsOpened(true);
+              setIntroState('opened');
               void unlockAudioFromGesture();
             }}
             className="fixed inset-0 z-[200] bg-black flex items-center justify-center overflow-hidden cursor-pointer"
@@ -730,17 +750,38 @@ export default function WeddingInvitation() {
               muted
               playsInline
               onEnded={() => {
-                setIsOpened(true);
+                setIntroState('opened');
                 void unlockAudioFromGesture();
               }}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-70"
             >
-              <source src="/intro_video.mp4" type="video/mp4" />
+              <source src="/Wedding_entrance_floral_arch_202605161834.mp4" type="video/mp4" />
             </video>
 
-            <div className="absolute inset-0 z-10 bg-black/5" />
+            <div className="absolute inset-0 z-10 bg-black/30" />
+
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pb-[20vh] md:pb-[30vh] text-center px-4 pointer-events-none">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="text-white/90 font-montserrat text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 drop-shadow-md"
+              >
+                Wedding Invitation
+              </motion.p>
+              <motion.h1
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 1.5 }}
+                className="font-alex text-5xl md:text-7xl lg:text-8xl text-white drop-shadow-xl"
+              >
+                Achini malsha <span className="font-serif italic text-3xl md:text-5xl mx-2 text-[#d4af37]">&amp;</span> Vibodha Vimukthi
+              </motion.h1>
+            </div>
           </motion.div>
-        ) : (
+        )}
+
+        {introState === 'opened' && (
           <motion.div
             key="website-stage"
             initial={{ opacity: 0 }}
@@ -756,7 +797,7 @@ export default function WeddingInvitation() {
             <motion.button
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              onClick={() => setIsOpened(false)}
+              onClick={() => setIntroState('button')}
               className="fixed top-6 right-6 z-50 bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
             >
               <div className="flex flex-col items-center">
@@ -831,13 +872,13 @@ export default function WeddingInvitation() {
                 </motion.p>
 
                 <h1 className="mt-6 text-center font-alex text-[2.8rem] leading-[1.1] text-[#0d3f38] drop-shadow-[0_2px_8px_rgba(0,0,0,0.05)] sm:text-[4.5rem] md:text-[6.5rem] lg:text-[7.5rem]">
-                  <span className="text-shimmer block">Niwarthana</span>
+                  <span className="text-shimmer block">Achini malsha</span>
                   <div className="my-2 flex items-center justify-center gap-4">
                     <div className="h-px w-16 bg-[#0d3f38]/20" />
                     <span className="font-serif text-3xl italic text-[#d4af37] sm:text-4xl md:text-5xl">&amp;</span>
                     <div className="h-px w-16 bg-[#0d3f38]/20" />
                   </div>
-                  <span className="text-shimmer block">Thenuka</span>
+                  <span className="text-shimmer block">Vibodha Vimukthi</span>
                 </h1>
 
                 <motion.div
@@ -846,7 +887,7 @@ export default function WeddingInvitation() {
                   transition={{ delay: 1, duration: 1 }}
                   className="mt-8 mb-10 text-center"
                 >
-                  <p className="font-cinzel text-xl text-[#0d3f38] tracking-[0.2em]">MAY 15 | 2026</p>
+                  <p className="font-cinzel text-xl text-[#0d3f38] tracking-[0.2em]">AUGUST 27 | 2026</p>
                 </motion.div>
 
                 <motion.p
@@ -860,9 +901,9 @@ export default function WeddingInvitation() {
 
                 <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
                   {[
-                    { label: "Ceremony", value: "Poruwa 9.40 AM" },
-                    { label: "Venue", value: "Saminro Grand Palace" },
-                    { label: "Reception", value: "9.30 AM - 4.00 PM" }
+                    { label: "Ceremony", value: "Poruwa 9.00 AM" },
+                    { label: "Venue", value: "27 Heritage" },
+                    { label: "Reception", value: "9.00 AM - 4.00 PM" }
                   ].map((item, i) => (
                     <motion.div
                       key={item.label}
@@ -885,7 +926,7 @@ export default function WeddingInvitation() {
                 >
                   <div className="inline-flex items-center gap-3 rounded-full border border-pink-200/50 bg-white/40 px-6 py-2 backdrop-blur-md shadow-sm">
                     <Heart className="h-4 w-4 text-pink-500 fill-pink-500 animate-heartbeat" />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-pink-600/80">SAVE THE DATE • MAY 15</span>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-pink-600/80">SAVE THE DATE • AUGUST 27</span>
                     <Heart className="h-4 w-4 text-pink-500 fill-pink-500 animate-heartbeat" />
                   </div>
                 </motion.div>
@@ -947,92 +988,45 @@ export default function WeddingInvitation() {
                   </p>
                   <div className="pt-4 pb-2 w-full flex justify-center">
                     <span className="text-[#0d3f38] font-alex text-[2.8rem] md:text-6xl block my-2 drop-shadow-sm leading-tight text-center">
-                      {guestName || "MR. / MR. & MRS. / MS. / FAMILY"}
+                      {guestName || "Invite You"}
                     </span>
                   </div>
                   <div className="h-[0.5px] w-24 bg-[#d4af37]/50 mt-6" />
                 </motion.div>
 
-                <div className="relative w-full flex flex-col md:flex-row items-center justify-center gap-16 lg:gap-32 mt-4 mb-16">
-                  {/* Premium Dual Image Layout */}
-                  <div className="relative w-[300px] md:w-[450px] aspect-[3/4] flex-shrink-0 mb-12 md:mb-0">
-                    {/* Main Portrait */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.5 }}
-                      className="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white group"
-                    >
-                      <img
-                        src={brideGroomImage}
-                        alt="Niwarthana & Thenuka"
-                        loading="lazy"
-                        decoding="async"
-                        width={450}
-                        height={600}
-                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                    </motion.div>
-
-                    {/* Overlapping Secondary Image - 'Cute' feel */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -30, y: 30, rotate: -5 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0, rotate: -8 }}
-                      transition={{ delay: 0.8, duration: 1.2 }}
-                      viewport={{ once: true }}
-                      whileHover={{ rotate: -5, scale: 1.05 }}
-                      className="absolute -bottom-6 -left-6 md:-bottom-10 md:-left-12 w-[60%] aspect-[4/5] bg-white p-2 rounded-xl shadow-2xl z-20 border border-[#d4af37]/30"
-                    >
-                      <img
-                        src={secondaryImage}
-                        alt="The Couple"
-                        loading="lazy"
-                        decoding="async"
-                        width={300}
-                        height={400}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                      {/* Floating Sparkle on the corner for 'Premium' feel */}
-                      <div className="absolute -top-3 -right-3 text-[#d4af37] animate-pulse">
-                        <Sparkles size={20} />
-                      </div>
-                    </motion.div>
-                  </div>
-
+                <div className="relative w-full flex flex-col items-center justify-center mt-4 mb-16">
                   {/* Minimalist Names side */}
                   <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.2, delay: 0.2 }}
-                    className="flex flex-col items-center md:items-start text-center md:text-left space-y-4 md:space-y-10 z-20 w-full"
+                    className="flex flex-col items-center text-center space-y-4 md:space-y-10 z-20 w-full"
                   >
-                    <div className="w-full flex justify-center md:justify-start overflow-hidden">
+                    <div className="w-full flex justify-center overflow-hidden">
                       <h3 className="text-[3.5rem] sm:text-6xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-none drop-shadow-sm px-2 pb-2">
-                        Niwarthana
+                        Achini malsha
                       </h3>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full justify-center md:justify-start px-4 md:pl-6">
+                    <div className="flex items-center gap-4 w-full justify-center px-4">
                       <div className="h-[0.5px] flex-1 max-w-[40px] bg-[#d4af37]/40" />
                       <span className="font-serif text-2xl md:text-6xl text-slate-400 italic font-light">&</span>
                       <div className="h-[0.5px] flex-1 max-w-[40px] bg-[#d4af37]/40" />
                     </div>
 
-                    <div className="w-full flex justify-center md:justify-start overflow-hidden">
+                    <div className="w-full flex justify-center overflow-hidden">
                       <h3 className="text-[3.5rem] sm:text-6xl md:text-[8rem] lg:text-[9rem] font-alex text-gold-gradient leading-none drop-shadow-sm px-2 pt-2">
-                        Thenuka
+                        Vibodha Vimukthi
                       </h3>
                     </div>
 
-                    <div className="pt-6 md:pt-8 w-full">
-                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center md:text-left leading-relaxed px-2">
-                        Loving Daughter of Mr. Chaminda & Mrs. Niluka
+                    <div className="pt-6 md:pt-8 w-full flex flex-col items-center justify-center space-y-4">
+                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center leading-relaxed px-2">
+                        Beloved Daughter of Mr. Aththanayaka Mudiyanselage Dammika Sunil Aththanayaka & Mrs. Nilwakka Kankanamal
                       </p>
-                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center md:text-left leading-relaxed px-2">
-                        Loving Son of Mr. Ananda & Mrs. Manjula
+                      <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center leading-relaxed px-2">
+                        Beloved Son of Mr. Sarath Shanth & Mrs. Airagani Indralatha
                       </p>
                     </div>
                   </motion.div>
@@ -1064,10 +1058,10 @@ export default function WeddingInvitation() {
                         </span>
                       </div>
                       <h2 className="font-cinzel text-[2.5rem] md:text-[4rem] text-[#045e54] leading-tight tracking-widest font-bold uppercase">
-                        Saminro Grand Palace
+                        27 Heritage
                       </h2>
                       <p className="font-playball text-3xl md:text-5xl text-[#045e54] italic mt-2">
-                        MAKOLA
+                        BADULLA
                       </p>
                     </div>
 
@@ -1075,18 +1069,18 @@ export default function WeddingInvitation() {
                       <div className="flex items-start gap-4">
                         <MapPin className="w-5 h-5 text-[#045e54] mt-1 shrink-0" />
                         <p className="text-lg md:text-xl text-[#045e54] font-cinzel leading-relaxed tracking-wide uppercase">
-                          Saminro Grand Palace, Makola.
+                          27 Heritage, Badulla.
                         </p>
                       </div>
                       <p className="text-[#045e54]/70 text-sm md:text-base tracking-widest uppercase font-light leading-loose">
-                        (Poruwa Ceremony at 9.40 AM) FRIDAY, TH 15 MAY 2026. From 9.30 AM to 4.00 PM.
+                        (Poruwa Ceremony at 9.00 AM) THURSDAY, 27 AUGUST 2026. From 9.00 AM to 4.00 PM.
                       </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
                       <button
                         onClick={() =>
-                          window.open("https://www.google.com/maps/search/?api=1&query=Saminro+Grand+Palace+Makola", "_blank")
+                          window.open("https://www.google.com/maps/search/?api=1&query=27+Heritage+Badulla", "_blank")
                         }
                         className="group relative inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#045e54] text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] overflow-hidden transition-all hover:bg-[#034d44]"
                       >
@@ -1106,7 +1100,7 @@ export default function WeddingInvitation() {
                     <div className="absolute inset-2 border-[0.5px] border-[#045e54]/30 pointer-events-none z-20" />
                     <div className="w-full h-full overflow-hidden bg-white relative">
                       <iframe
-                        src="https://maps.google.com/maps?q=Saminro%20Grand%20Palace,%20Makola&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                        src="https://maps.google.com/maps?q=27%20Heritage,%20Badulla&t=&z=16&ie=UTF8&iwloc=&output=embed"
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}
@@ -1184,7 +1178,7 @@ export default function WeddingInvitation() {
 
                     <div className="w-full flex flex-col items-center mt-6 relative z-10 px-2 md:px-6">
                       <p className="font-montserrat text-[10px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-medium mb-2 text-center leading-relaxed">
-                        RSVP - Chaminda 077 909 0515 | Thenuka 076 850 4398
+                        RSVP - Dammika 077 909 0515 | Vibodha 076 850 4398
                       </p>
 
                       <div className="flex items-center justify-center gap-4 w-full mb-8">
@@ -1420,18 +1414,18 @@ export default function WeddingInvitation() {
 
                     <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 mt-4">
                       <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
-                        Niwarthana
+                        Achini malsha
                       </h2>
                       <span className="font-serif text-3xl md:text-5xl text-[#d4af37] italic opacity-80 drop-shadow-md pb-2">&</span>
                       <h2 className="font-alex text-5xl md:text-7xl text-gold-gradient py-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] leading-none">
-                        Thenuka
+                        Vibodha Vimukthi
                       </h2>
                     </div>
                   </motion.div>
 
                   <div className="mt-20 pt-8 border-t-[0.5px] border-[#d4af37]/30 w-full max-w-xs md:max-w-md flex flex-col items-center gap-4">
                     <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-[#f7e7ce]/50 font-bold leading-relaxed flex flex-col md:flex-row items-center gap-2 md:gap-4">
-                      <span>© 2026 Niwarthana & Thenuka</span>
+                      <span>© 2026 Achini malsha & Vibodha Vimukthi</span>
                       <span className="hidden md:inline text-[#d4af37]/30">|</span>
                       <span>All Rights Reserved</span>
                     </p>
