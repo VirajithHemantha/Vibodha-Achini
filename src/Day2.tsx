@@ -839,8 +839,25 @@ export default function Day2() {
                 initial={{ opacity: 0, y: 30, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="relative z-20 w-full max-w-5xl rounded-[2.5rem] glass-morphism px-5 py-10 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.3)] sm:px-12 sm:py-16 md:px-20 md:py-20"
+                className="relative z-20 w-full max-w-5xl rounded-[2.5rem] px-5 py-10 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.3)] sm:px-12 sm:py-16 md:px-20 md:py-20 overflow-hidden"
               >
+                {/* Background Image */}
+                <div 
+                  className="absolute inset-0 z-0" 
+                  style={{ 
+                    backgroundImage: 'url("/WhatsApp Image 2026-06-24 at 03.47.14.jpeg")', 
+                    backgroundSize: 'cover', 
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                  }} 
+                />
+                {/* Glass overlay to maintain text readability */}
+                <div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[3px] rounded-[2.5rem] border border-[#d4af37]/30" />
+                
+                {/* Text highlight glow */}
+                <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.5)_40%,transparent_70%)] pointer-events-none rounded-[2.5rem]" />
+
+                <div className="relative z-10 w-full h-full flex flex-col">
                 {/* Side corner ornaments - modified for better mobile fit */}
                 <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#d4af37]/30 rounded-tl-[2.5rem]" />
                 <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#d4af37]/30 rounded-br-[2.5rem]" />
@@ -867,19 +884,19 @@ export default function Day2() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="text-center font-montserrat text-[9px] font-bold uppercase tracking-[0.4em] text-[#d4af37] sm:text-[10px]"
+                  className="text-center font-montserrat text-[9px] font-bold uppercase tracking-[0.4em] text-[#b88d1b] sm:text-[10px] drop-shadow-[0_1px_2px_rgba(255,255,255,1)]"
                 >
                   Are You Ready?
                 </motion.p>
 
-                <h1 className="mt-6 text-center font-alex text-[2.8rem] leading-[1.1] text-[#3d0c0c] drop-shadow-[0_2px_8px_rgba(0,0,0,0.05)] sm:text-[4.5rem] md:text-[6.5rem] lg:text-[7.5rem]">
-                  <span className="text-shimmer block">Achini malsha</span>
+                <h1 className="mt-6 text-center font-alex text-[2.8rem] leading-[1.1] text-[#3d0c0c] drop-shadow-[0_4px_16px_rgba(255,255,255,1)] sm:text-[4.5rem] md:text-[6.5rem] lg:text-[7.5rem]">
+                  <span className="block text-[#2c0909]">Achini malsha</span>
                   <div className="my-2 flex items-center justify-center gap-4">
                     <div className="h-px w-16 bg-[#3d0c0c]/20" />
                     <span className="font-serif text-3xl italic text-[#d4af37] sm:text-4xl md:text-5xl">&amp;</span>
                     <div className="h-px w-16 bg-[#3d0c0c]/20" />
                   </div>
-                  <span className="text-shimmer block">Vibodha Vimukthi</span>
+                  <span className="block text-[#2c0909]">Vibodha Vimukthi</span>
                 </h1>
 
                 <motion.div
@@ -888,14 +905,14 @@ export default function Day2() {
                   transition={{ delay: 1, duration: 1 }}
                   className="mt-8 mb-10 text-center"
                 >
-                  <p className="font-cinzel text-xl text-[#3d0c0c] tracking-[0.2em]">AUGUST 29 | 2026</p>
+                  <p className="font-cinzel text-xl text-[#3d0c0c] tracking-[0.2em] font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,1)]">AUGUST 29 | 2026</p>
                 </motion.div>
 
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 }}
-                  className="mx-auto max-w-2xl text-center font-montserrat text-[11px] font-medium uppercase tracking-[0.25em] text-slate-600 leading-relaxed sm:text-xs"
+                  className="mx-auto max-w-2xl text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.25em] text-[#3d0c0c] leading-relaxed sm:text-xs drop-shadow-[0_2px_4px_rgba(255,255,255,1)]"
                 >
                   With joyous hearts, we invite you to share in our celebration of love and new beginnings
                 </motion.p>
@@ -931,6 +948,7 @@ export default function Day2() {
                     <Heart className="h-4 w-4 text-pink-500 fill-pink-500 animate-heartbeat" />
                   </div>
                 </motion.div>
+              </div>
               </motion.div>
 
               <motion.div
@@ -1024,7 +1042,7 @@ export default function Day2() {
 
                     <div className="pt-6 md:pt-8 w-full flex flex-col items-center justify-center space-y-4">
                       <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center leading-relaxed px-2">
-                        Beloved Daughter of Mr. Aththanayaka Mudiyanselage Dammika Sunil Aththanayaka & Mrs. Nilwakka Kankanamal
+                        Beloved Daughter of Mr. Aththanayaka Mudiyanselage Dammika Sunil Aththanayaka & Mrs. Nilwakka Kankanamalage Chintha Kumari
                       </p>
                       <p className="font-montserrat text-[8px] md:text-[11px] tracking-[0.2em] text-slate-500 uppercase font-bold text-center leading-relaxed px-2">
                         Beloved Son of Mr. Sarath Shanth & Mrs. Airagani Indralatha
