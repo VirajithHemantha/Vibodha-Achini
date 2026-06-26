@@ -2,16 +2,10 @@
  * Google Apps Script Web App for Wedding RSVP + Wishes
  *
  * Spreadsheet:
- * https://docs.google.com/spreadsheets/d/1WsNJdnLeVIX8ZUAcOROukiP27OeIgZbMLfsCT-HU8JE/edit
- *
- * Required sheets:
- * - rsvp
- * - wish
+ * https://docs.google.com/spreadsheets/d/1B8HhvvWzmPsfBIs1ZoltFI3rT1XYTdaYRHY0KnKAR9E/edit
  */
 
-const SPREADSHEET_ID = "1WsNJdnLeVIX8ZUAcOROukiP27OeIgZbMLfsCT-HU8JE";
-const RSVP_SHEET_NAME = "rsvp";
-const WISH_SHEET_NAME = "wish";
+const SPREADSHEET_ID = "1B8HhvvWzmPsfBIs1ZoltFI3rT1XYTdaYRHY0KnKAR9E";
 
 function doPost(e) {
   return handleRequest_(e);
@@ -48,19 +42,19 @@ function handleRequest_(e) {
 }
 
 function saveRsvp_(params) {
-  const sheet = getSheet_(RSVP_SHEET_NAME);
+  const day = String(params.day || "1").trim();
+  const sheetName = `day ${day} rsvp`;
+  const sheet = getOrCreateSheet_(sheetName);
 
   ensureHeader_(sheet, [
     "timestamp",
     "name",
-    "place",
     "guests",
     "attendance",
     "dietaryNotes",
   ]);
 
   const name = String(params.name || "").trim();
-  const place = String(params.place || "").trim();
   const attending = String(params.attending || "").trim();
   const guests = String(params.guests || "").trim();
   const dietaryNotes = String(params.dietaryNotes || "").trim();
@@ -74,17 +68,18 @@ function saveRsvp_(params) {
   sheet.appendRow([
     new Date(),
     name,
-    place,
     guests || "1",
     attendance,
     dietaryNotes,
   ]);
 
-  return { ok: true, message: "RSVP saved" };
+  return { ok: true, message: "RSVP saved to " + sheetName };
 }
 
 function saveWish_(params) {
-  const sheet = getSheet_(WISH_SHEET_NAME);
+  const day = String(params.day || "1").trim();
+  const sheetName = `day ${day} wish`;
+  const sheet = getOrCreateSheet_(sheetName);
 
   ensureHeader_(sheet, ["timestamp", "name", "message"]);
 
@@ -97,15 +92,15 @@ function saveWish_(params) {
 
   sheet.appendRow([new Date(), name, message]);
 
-  return { ok: true, message: "Wish saved" };
+  return { ok: true, message: "Wish saved to " + sheetName };
 }
 
-function getSheet_(sheetName) {
+function getOrCreateSheet_(sheetName) {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(sheetName);
+  let sheet = spreadsheet.getSheetByName(sheetName);
 
   if (!sheet) {
-    throw new Error("Sheet not found: " + sheetName);
+    sheet = spreadsheet.insertSheet(sheetName);
   }
 
   return sheet;
@@ -114,6 +109,7 @@ function getSheet_(sheetName) {
 function ensureHeader_(sheet, headers) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
   }
 }
 

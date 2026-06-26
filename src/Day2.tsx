@@ -12,7 +12,7 @@ import { useInView } from 'react-intersection-observer';
  */
 
 const backgroundMusic = "/ama_anjana_flute.mp3";
-const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL?.trim() || "";
+const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw0NXiffl9ZbdxazeBRBodSFu9Z6EHWF0QiVQWsOew3mHAKbb5jZ0zXeRbCDdDMvO6JnQ/exec";
 
 /** iOS / Android block unmuted autoplay; iPadOS may report as MacIntel. */
 function isLikelyMobileOrTablet() {
@@ -509,19 +509,28 @@ export default function Day2() {
 
   const [rsvpForm, setRsvpForm] = useState({
     name: "",
-    place: "",
     attending: "yes",
     guests: "1",
   });
 
   // --- Personalization Logic ---
   const [guestName, setGuestName] = useState<string | null>(null);
+  const [guestPrefix, setGuestPrefix] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const to = params.get("to");
-    if (to) {
-      setGuestName(to.replace(/_/g, " ")); // Replace underscores with spaces for cleaner URLs
+    const name = params.get("name");
+    const prefix = params.get("prefix");
+    
+    if (name) {
+      setGuestName(name);
+    } else if (to) {
+      setGuestName(to.replace(/_/g, " "));
+    }
+    
+    if (prefix) {
+      setGuestPrefix(prefix);
     }
   }, []);
   // -----------------------------
@@ -655,14 +664,14 @@ export default function Day2() {
     try {
       await submitToGoogleSheet({
         action: "rsvp",
+        day: "2",
         name: rsvpForm.name.trim(),
-        place: rsvpForm.place.trim(),
         attending: rsvpForm.attending,
         guests: rsvpForm.attending === "yes" ? rsvpForm.guests : "0",
         dietaryNotes: "",
       });
       setRsvpStatus("success");
-      setRsvpForm({ name: "", place: "", attending: "yes", guests: "1" });
+      setRsvpForm({ name: "", attending: "yes", guests: "1" });
     } catch {
       setRsvpStatus("error");
     }
@@ -681,6 +690,7 @@ export default function Day2() {
     try {
       await submitToGoogleSheet({
         action: "wish",
+        day: "2",
         name: wishForm.name.trim(),
         message: wishForm.message.trim(),
       });
@@ -914,7 +924,14 @@ export default function Day2() {
                   transition={{ delay: 1.2 }}
                   className="mx-auto max-w-2xl text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.25em] text-[#3d0c0c] leading-relaxed sm:text-xs drop-shadow-[0_2px_4px_rgba(255,255,255,1)]"
                 >
-                  With joyous hearts, we invite you to share in our celebration of love and new beginnings
+                  {guestName ? (
+                    <>
+                      Dear {guestPrefix ? `${guestPrefix} ` : ''}{guestName},<br />
+                      We cordially invite you to share in our celebration of love and new beginnings
+                    </>
+                  ) : (
+                    "With joyous hearts, we invite you to share in our celebration of love and new beginnings"
+                  )}
                 </motion.p>
 
                 <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
@@ -1114,20 +1131,25 @@ export default function Day2() {
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="relative w-full aspect-[3/4] max-w-[450px] mx-auto bg-white p-3 shadow-[0_40px_80px_-20px_rgba(135,147,122,0.2)] border border-[#b84646]/50"
+                    className="relative w-full max-w-[450px] mx-auto aspect-[4/5] md:aspect-[3/4] rounded-t-full rounded-b-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] border-[12px] border-white bg-theme-100 overflow-hidden group"
                   >
-                    <div className="absolute inset-2 border-[0.5px] border-[#7a1717]/30 pointer-events-none z-20" />
-                    <div className="w-full h-full overflow-hidden bg-white relative">
-                      <iframe
-                        src="https://maps.google.com/maps?q=Crown%20Regency,%20Badulla&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                        width="100%"
-                        height="100%"
+                    <div className="absolute inset-0 border border-theme-200 rounded-t-full rounded-b-[1.5rem] pointer-events-none z-10"></div>
+                    <div className="absolute inset-0 w-full h-full scale-[1.2] group-hover:scale-[1.15] transition-transform duration-[2s]">
+                      <iframe 
+                        src="https://maps.google.com/maps?q=Crown%20Regency,%20Badulla&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                        width="100%" 
+                        height="100%" 
+                        allowFullScreen 
+                        loading="lazy" 
+                        referrerPolicy="no-referrer-when-downgrade" 
+                        className="w-full h-full grayscale-[0.3] hover:grayscale-0 transition-all duration-1000" 
                         style={{ border: 0 }}
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        className="w-full h-full grayscale-[0.8] contrast-110 sepia-[0.3] opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-1000"
                       />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/80 to-transparent h-32 pointer-events-none z-10 flex items-end justify-center pb-6">
+                      <p className="text-[8px] uppercase tracking-widest text-stone-500 font-bold bg-white/90 px-5 py-2 rounded-full shadow-sm backdrop-blur-md inline-flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-400 animate-pulse"></span>View on Map
+                      </p>
                     </div>
                   </motion.div>
                 </div>
@@ -1224,20 +1246,7 @@ export default function Day2() {
                           />
                         </div>
 
-                        <div className="relative group pt-4">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] absolute top-0 left-0 transition-colors group-focus-within:text-[#d4af37]">Area / City</label>
-                          <input
-                            type="text"
-                            placeholder="Where are you coming from?"
-                            value={rsvpForm.place}
-                            onChange={(e) => {
-                              setRsvpStatus("idle");
-                              setRsvpForm((prev) => ({ ...prev, place: e.target.value }));
-                            }}
-                            className="w-full bg-transparent border-b-[0.5px] border-slate-300 px-0 py-2 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-[#d4af37] transition-all font-serif text-lg md:text-xl italic mt-4"
-                            required
-                          />
-                        </div>
+
 
                         <div className="space-y-5 pt-6">
                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">

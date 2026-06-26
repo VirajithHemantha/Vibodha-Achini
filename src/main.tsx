@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import Day2 from './Day2';
+import AdminPage from './AdminPage';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -11,6 +12,9 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/day2" element={<Day2 />} />
+        <Route path="/day1admin" element={<AdminPage day={1} />} />
+        <Route path="/day2admin" element={<AdminPage day={2} />} />
+        <Route path="/admin" element={<AdminPage day={1} />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
